@@ -13,7 +13,7 @@ impl GenBindings {
         let bindings = self
             .bindings_path
             .map(PathBuf::from)
-            .unwrap_or_else(|| root.join("imgui-sys/third-party"));
+            .unwrap_or_else(|| root.join("imgui-sys/third-party/cimgui/generator/output"));
 
         let output = self
             .output_path
@@ -26,7 +26,7 @@ impl GenBindings {
             .unwrap_or_else(|| "imgui-sys-v0".to_string());
         let types = get_types(&bindings.join("structs_and_enums.json"))?;
         let funcs = get_definitions(&bindings.join("definitions.json"))?;
-        let header = bindings.join("cimgui.h");
+        let header = root.join("imgui-sys/third-party/cimgui/cimgui.h");
 
         generate_binding_file(&header, &output.join("bindings.rs"), &types, &funcs, None)?;
         generate_binding_file(

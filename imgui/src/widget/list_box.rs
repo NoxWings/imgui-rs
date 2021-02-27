@@ -65,11 +65,21 @@ impl<'a> ListBox<'a> {
     pub fn begin(self, ui: &Ui) -> Option<ListBoxToken> {
         let should_render = unsafe {
             match self.size {
-                Size::Vec(size) => sys::igListBoxHeaderVec2(self.label.as_ptr(), size),
+                Size::Vec(size) => sys::igBeginListBox(self.label.as_ptr(), size),
                 Size::Items {
                     items_count,
                     height_in_items,
-                } => sys::igListBoxHeaderInt(self.label.as_ptr(), items_count, height_in_items),
+                } => {
+                    let height_in_items_f = if height_in_items < 0 {
+                        std::cmp::min(items_count, 7)
+                    } else {
+                        height_in_items
+                    } as f32;
+                    let style = *sys::igGetStyle();
+                    let height = sys::igGetTextLineHeightWithSpacing() + height_in_items_f + style.FramePadding.y * 2.0;
+                    let size = sys::ImVec2::new(0.0, height);
+                    sys::igBeginListBox(self.label.as_ptr(), size)
+                }
             }
         };
         if should_render {
@@ -99,7 +109,7 @@ impl ListBoxToken {
     /// Ends a list box
     pub fn end(mut self, _: &Ui) {
         self.ctx = ptr::null();
-        unsafe { sys::igListBoxFooter() };
+        unsafe { sys::igEndListBox() };
     }
 }
 
