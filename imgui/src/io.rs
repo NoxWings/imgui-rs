@@ -1,7 +1,7 @@
 use bitflags::bitflags;
 use std::f32;
 use std::ops::{Index, IndexMut};
-use std::os::raw::{c_char, c_int, c_void};
+use std::os::raw::{c_char, c_void};
 use std::time::Duration;
 
 use crate::fonts::atlas::FontAtlas;
@@ -44,6 +44,12 @@ bitflags! {
         /// `set_mouse_cursor` to change the mouse cursor. You may want to honor requests from
         /// imgui-rs by reading `get_mouse_cursor` yourself instead.
         const NO_MOUSE_CURSOR_CHANGE = sys::ImGuiConfigFlags_NoMouseCursorChange;
+
+        const DOCKING_ENABLE = sys::ImGuiConfigFlags_DockingEnable;
+        const VIEWPORTS_ENABLE = sys::ImGuiConfigFlags_ViewportsEnable;
+        const DPI_ENABLE_SCALE_VIEWPORTS = sys::ImGuiConfigFlags_DpiEnableScaleViewports;
+        const DPI_ENABLE_SCALE_FONTS = sys::ImGuiConfigFlags_DpiEnableScaleFonts;
+
         /// Application is SRGB-aware.
         ///
         /// Not used by core imgui-rs.
@@ -174,6 +180,15 @@ pub struct Io {
     /// framebuffer coordinates
     pub display_framebuffer_scale: [f32; 2],
 
+    pub config_docking_no_split: bool,
+    pub config_docking_with_shift: bool,
+    pub config_docking_always_tab_bar: bool,
+    pub config_docking_transparent_payload: bool,
+    pub config_viewports_no_auto_merge: bool,
+    pub config_viewports_no_task_bar_icon: bool,
+    pub config_viewports_no_decoration: bool,
+    pub config_viewports_no_default_parent: bool,
+
     /// Request imgui-rs to draw a mouse cursor for you
     pub mouse_draw_cursor: bool,
     /// macOS-style input behavior.
@@ -215,8 +230,6 @@ pub struct Io {
     pub(crate) set_clipboard_text_fn:
         Option<unsafe extern "C" fn(user_data: *mut c_void, text: *const c_char)>,
     pub(crate) clipboard_user_data: *mut c_void,
-    ime_set_input_screen_pos_fn: Option<unsafe extern "C" fn(x: c_int, y: c_int)>,
-    ime_window_handle: *mut c_void,
     /// Mouse position, in pixels.
     ///
     /// Set to [f32::MAX, f32::MAX] if mouse is unavailable (on another screen, etc.).
@@ -232,6 +245,7 @@ pub struct Io {
     /// Most users don't have a mouse with a horizontal wheel, and may not be filled by all
     /// backends.
     pub mouse_wheel_h: f32,
+    pub mouse_hovered_viewport: i32,
     /// Keyboard modifier pressed: Control
     pub key_ctrl: bool,
     /// Keyboard modifier pressed: Shift
@@ -419,6 +433,14 @@ fn test_io_memory_layout() {
     assert_field_offset!(font_allow_user_scaling, FontAllowUserScaling);
     assert_field_offset!(font_default, FontDefault);
     assert_field_offset!(display_framebuffer_scale, DisplayFramebufferScale);
+    assert_field_offset!(config_docking_no_split, ConfigDockingNoSplit);
+    assert_field_offset!(config_docking_with_shift, ConfigDockingWithShift);
+    assert_field_offset!(config_docking_always_tab_bar, ConfigDockingAlwaysTabBar);
+    assert_field_offset!(config_docking_transparent_payload, ConfigDockingTransparentPayload);
+    assert_field_offset!(config_viewports_no_auto_merge, ConfigViewportsNoAutoMerge);
+    assert_field_offset!(config_viewports_no_task_bar_icon, ConfigViewportsNoTaskBarIcon);
+    assert_field_offset!(config_viewports_no_decoration, ConfigViewportsNoDecoration);
+    assert_field_offset!(config_viewports_no_default_parent, ConfigViewportsNoDefaultParent);
     assert_field_offset!(mouse_draw_cursor, MouseDrawCursor);
     assert_field_offset!(config_mac_os_behaviors, ConfigMacOSXBehaviors);
     assert_field_offset!(config_input_text_cursor_blink, ConfigInputTextCursorBlink);
@@ -438,12 +460,11 @@ fn test_io_memory_layout() {
     assert_field_offset!(get_clipboard_text_fn, GetClipboardTextFn);
     assert_field_offset!(set_clipboard_text_fn, SetClipboardTextFn);
     assert_field_offset!(clipboard_user_data, ClipboardUserData);
-    assert_field_offset!(ime_set_input_screen_pos_fn, ImeSetInputScreenPosFn);
-    assert_field_offset!(ime_window_handle, ImeWindowHandle);
     assert_field_offset!(mouse_pos, MousePos);
     assert_field_offset!(mouse_down, MouseDown);
     assert_field_offset!(mouse_wheel, MouseWheel);
     assert_field_offset!(mouse_wheel_h, MouseWheelH);
+    assert_field_offset!(mouse_hovered_viewport, MouseHoveredViewport);
     assert_field_offset!(key_ctrl, KeyCtrl);
     assert_field_offset!(key_shift, KeyShift);
     assert_field_offset!(key_alt, KeyAlt);

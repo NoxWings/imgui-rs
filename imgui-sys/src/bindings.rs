@@ -142,6 +142,16 @@ impl Default for _IO_FILE {
         unsafe { ::core::mem::zeroed() }
     }
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ImGuiDockNodeSettings {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct ImGuiDockRequest {
+    _unused: [u8; 0],
+}
 pub type ImGuiCol = cty::c_int;
 pub type ImGuiCond = cty::c_int;
 pub type ImGuiDataType = cty::c_int;
@@ -161,6 +171,7 @@ pub type ImGuiButtonFlags = cty::c_int;
 pub type ImGuiColorEditFlags = cty::c_int;
 pub type ImGuiConfigFlags = cty::c_int;
 pub type ImGuiComboFlags = cty::c_int;
+pub type ImGuiDockNodeFlags = cty::c_int;
 pub type ImGuiDragDropFlags = cty::c_int;
 pub type ImGuiFocusedFlags = cty::c_int;
 pub type ImGuiHoveredFlags = cty::c_int;
@@ -196,6 +207,7 @@ pub type ImDrawCallback = ::core::option::Option<
     unsafe extern "C" fn(parent_list: *const ImDrawList, cmd: *const ImDrawCmd),
 >;
 pub type ImDrawIdx = cty::c_ushort;
+pub type ImGuiDataAuthority = cty::c_int;
 pub type ImGuiLayoutType = cty::c_int;
 pub type ImGuiItemFlags = cty::c_int;
 pub type ImGuiItemStatusFlags = cty::c_int;
@@ -429,6 +441,30 @@ impl Default for ImVector_ImGuiContextHook {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImVector_ImGuiDockNodeSettings {
+    pub Size: cty::c_int,
+    pub Capacity: cty::c_int,
+    pub Data: *mut ImGuiDockNodeSettings,
+}
+impl Default for ImVector_ImGuiDockNodeSettings {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImVector_ImGuiDockRequest {
+    pub Size: cty::c_int,
+    pub Capacity: cty::c_int,
+    pub Data: *mut ImGuiDockRequest,
+}
+impl Default for ImVector_ImGuiDockRequest {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct ImVector_ImGuiGroupData {
     pub Size: cty::c_int,
     pub Capacity: cty::c_int,
@@ -483,6 +519,18 @@ pub struct ImVector_ImGuiOldColumns {
     pub Data: *mut ImGuiOldColumns,
 }
 impl Default for ImVector_ImGuiOldColumns {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImVector_ImGuiPlatformMonitor {
+    pub Size: cty::c_int,
+    pub Capacity: cty::c_int,
+    pub Data: *mut ImGuiPlatformMonitor,
+}
+impl Default for ImVector_ImGuiPlatformMonitor {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
@@ -597,6 +645,18 @@ impl Default for ImVector_ImGuiTextRange {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImVector_ImGuiViewportPtr {
+    pub Size: cty::c_int,
+    pub Capacity: cty::c_int,
+    pub Data: *mut *mut ImGuiViewport,
+}
+impl Default for ImVector_ImGuiViewportPtr {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct ImVector_ImGuiViewportPPtr {
     pub Size: cty::c_int,
     pub Capacity: cty::c_int,
@@ -693,6 +753,18 @@ impl Default for ImVector_char {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImVector_const_charPtr {
+    pub Size: cty::c_int,
+    pub Capacity: cty::c_int,
+    pub Data: *mut *const cty::c_char,
+}
+impl Default for ImVector_const_charPtr {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct ImVector_float {
     pub Size: cty::c_int,
     pub Capacity: cty::c_int,
@@ -750,6 +822,7 @@ pub const ImGuiWindowFlags_AlwaysUseWindowPadding: ImGuiWindowFlags_ = 65536;
 pub const ImGuiWindowFlags_NoNavInputs: ImGuiWindowFlags_ = 262144;
 pub const ImGuiWindowFlags_NoNavFocus: ImGuiWindowFlags_ = 524288;
 pub const ImGuiWindowFlags_UnsavedDocument: ImGuiWindowFlags_ = 1048576;
+pub const ImGuiWindowFlags_NoDocking: ImGuiWindowFlags_ = 2097152;
 pub const ImGuiWindowFlags_NoNav: ImGuiWindowFlags_ = 786432;
 pub const ImGuiWindowFlags_NoDecoration: ImGuiWindowFlags_ = 43;
 pub const ImGuiWindowFlags_NoInputs: ImGuiWindowFlags_ = 786944;
@@ -759,6 +832,7 @@ pub const ImGuiWindowFlags_Tooltip: ImGuiWindowFlags_ = 33554432;
 pub const ImGuiWindowFlags_Popup: ImGuiWindowFlags_ = 67108864;
 pub const ImGuiWindowFlags_Modal: ImGuiWindowFlags_ = 134217728;
 pub const ImGuiWindowFlags_ChildMenu: ImGuiWindowFlags_ = 268435456;
+pub const ImGuiWindowFlags_DockNodeHost: ImGuiWindowFlags_ = 536870912;
 pub type ImGuiWindowFlags_ = cty::c_uint;
 pub const ImGuiInputTextFlags_None: ImGuiInputTextFlags_ = 0;
 pub const ImGuiInputTextFlags_CharsDecimal: ImGuiInputTextFlags_ = 1;
@@ -940,6 +1014,14 @@ pub const ImGuiHoveredFlags_AllowWhenDisabled: ImGuiHoveredFlags_ = 128;
 pub const ImGuiHoveredFlags_RectOnly: ImGuiHoveredFlags_ = 104;
 pub const ImGuiHoveredFlags_RootAndChildWindows: ImGuiHoveredFlags_ = 3;
 pub type ImGuiHoveredFlags_ = cty::c_uint;
+pub const ImGuiDockNodeFlags_None: ImGuiDockNodeFlags_ = 0;
+pub const ImGuiDockNodeFlags_KeepAliveOnly: ImGuiDockNodeFlags_ = 1;
+pub const ImGuiDockNodeFlags_NoDockingInCentralNode: ImGuiDockNodeFlags_ = 4;
+pub const ImGuiDockNodeFlags_PassthruCentralNode: ImGuiDockNodeFlags_ = 8;
+pub const ImGuiDockNodeFlags_NoSplit: ImGuiDockNodeFlags_ = 16;
+pub const ImGuiDockNodeFlags_NoResize: ImGuiDockNodeFlags_ = 32;
+pub const ImGuiDockNodeFlags_AutoHideTabBar: ImGuiDockNodeFlags_ = 64;
+pub type ImGuiDockNodeFlags_ = cty::c_uint;
 pub const ImGuiDragDropFlags_None: ImGuiDragDropFlags_ = 0;
 pub const ImGuiDragDropFlags_SourceNoPreviewTooltip: ImGuiDragDropFlags_ = 1;
 pub const ImGuiDragDropFlags_SourceNoDisableHover: ImGuiDragDropFlags_ = 2;
@@ -1036,6 +1118,10 @@ pub const ImGuiConfigFlags_NavEnableSetMousePos: ImGuiConfigFlags_ = 4;
 pub const ImGuiConfigFlags_NavNoCaptureKeyboard: ImGuiConfigFlags_ = 8;
 pub const ImGuiConfigFlags_NoMouse: ImGuiConfigFlags_ = 16;
 pub const ImGuiConfigFlags_NoMouseCursorChange: ImGuiConfigFlags_ = 32;
+pub const ImGuiConfigFlags_DockingEnable: ImGuiConfigFlags_ = 64;
+pub const ImGuiConfigFlags_ViewportsEnable: ImGuiConfigFlags_ = 1024;
+pub const ImGuiConfigFlags_DpiEnableScaleViewports: ImGuiConfigFlags_ = 16384;
+pub const ImGuiConfigFlags_DpiEnableScaleFonts: ImGuiConfigFlags_ = 32768;
 pub const ImGuiConfigFlags_IsSRGB: ImGuiConfigFlags_ = 1048576;
 pub const ImGuiConfigFlags_IsTouchScreen: ImGuiConfigFlags_ = 2097152;
 pub type ImGuiConfigFlags_ = cty::c_uint;
@@ -1044,6 +1130,9 @@ pub const ImGuiBackendFlags_HasGamepad: ImGuiBackendFlags_ = 1;
 pub const ImGuiBackendFlags_HasMouseCursors: ImGuiBackendFlags_ = 2;
 pub const ImGuiBackendFlags_HasSetMousePos: ImGuiBackendFlags_ = 4;
 pub const ImGuiBackendFlags_RendererHasVtxOffset: ImGuiBackendFlags_ = 8;
+pub const ImGuiBackendFlags_PlatformHasViewports: ImGuiBackendFlags_ = 1024;
+pub const ImGuiBackendFlags_HasMouseHoveredViewport: ImGuiBackendFlags_ = 2048;
+pub const ImGuiBackendFlags_RendererHasViewports: ImGuiBackendFlags_ = 4096;
 pub type ImGuiBackendFlags_ = cty::c_uint;
 pub const ImGuiCol_Text: ImGuiCol_ = 0;
 pub const ImGuiCol_TextDisabled: ImGuiCol_ = 1;
@@ -1083,22 +1172,24 @@ pub const ImGuiCol_TabHovered: ImGuiCol_ = 34;
 pub const ImGuiCol_TabActive: ImGuiCol_ = 35;
 pub const ImGuiCol_TabUnfocused: ImGuiCol_ = 36;
 pub const ImGuiCol_TabUnfocusedActive: ImGuiCol_ = 37;
-pub const ImGuiCol_PlotLines: ImGuiCol_ = 38;
-pub const ImGuiCol_PlotLinesHovered: ImGuiCol_ = 39;
-pub const ImGuiCol_PlotHistogram: ImGuiCol_ = 40;
-pub const ImGuiCol_PlotHistogramHovered: ImGuiCol_ = 41;
-pub const ImGuiCol_TableHeaderBg: ImGuiCol_ = 42;
-pub const ImGuiCol_TableBorderStrong: ImGuiCol_ = 43;
-pub const ImGuiCol_TableBorderLight: ImGuiCol_ = 44;
-pub const ImGuiCol_TableRowBg: ImGuiCol_ = 45;
-pub const ImGuiCol_TableRowBgAlt: ImGuiCol_ = 46;
-pub const ImGuiCol_TextSelectedBg: ImGuiCol_ = 47;
-pub const ImGuiCol_DragDropTarget: ImGuiCol_ = 48;
-pub const ImGuiCol_NavHighlight: ImGuiCol_ = 49;
-pub const ImGuiCol_NavWindowingHighlight: ImGuiCol_ = 50;
-pub const ImGuiCol_NavWindowingDimBg: ImGuiCol_ = 51;
-pub const ImGuiCol_ModalWindowDimBg: ImGuiCol_ = 52;
-pub const ImGuiCol_COUNT: ImGuiCol_ = 53;
+pub const ImGuiCol_DockingPreview: ImGuiCol_ = 38;
+pub const ImGuiCol_DockingEmptyBg: ImGuiCol_ = 39;
+pub const ImGuiCol_PlotLines: ImGuiCol_ = 40;
+pub const ImGuiCol_PlotLinesHovered: ImGuiCol_ = 41;
+pub const ImGuiCol_PlotHistogram: ImGuiCol_ = 42;
+pub const ImGuiCol_PlotHistogramHovered: ImGuiCol_ = 43;
+pub const ImGuiCol_TableHeaderBg: ImGuiCol_ = 44;
+pub const ImGuiCol_TableBorderStrong: ImGuiCol_ = 45;
+pub const ImGuiCol_TableBorderLight: ImGuiCol_ = 46;
+pub const ImGuiCol_TableRowBg: ImGuiCol_ = 47;
+pub const ImGuiCol_TableRowBgAlt: ImGuiCol_ = 48;
+pub const ImGuiCol_TextSelectedBg: ImGuiCol_ = 49;
+pub const ImGuiCol_DragDropTarget: ImGuiCol_ = 50;
+pub const ImGuiCol_NavHighlight: ImGuiCol_ = 51;
+pub const ImGuiCol_NavWindowingHighlight: ImGuiCol_ = 52;
+pub const ImGuiCol_NavWindowingDimBg: ImGuiCol_ = 53;
+pub const ImGuiCol_ModalWindowDimBg: ImGuiCol_ = 54;
+pub const ImGuiCol_COUNT: ImGuiCol_ = 55;
 pub type ImGuiCol_ = cty::c_uint;
 pub const ImGuiStyleVar_Alpha: ImGuiStyleVar_ = 0;
 pub const ImGuiStyleVar_WindowPadding: ImGuiStyleVar_ = 1;
@@ -1235,7 +1326,7 @@ pub struct ImGuiStyle {
     pub AntiAliasedFill: bool,
     pub CurveTessellationTol: f32,
     pub CircleSegmentMaxError: f32,
-    pub Colors: [ImVec4; 53usize],
+    pub Colors: [ImVec4; 55usize],
 }
 impl Default for ImGuiStyle {
     fn default() -> Self {
@@ -1269,6 +1360,14 @@ pub struct ImGuiIO {
     pub FontAllowUserScaling: bool,
     pub FontDefault: *mut ImFont,
     pub DisplayFramebufferScale: ImVec2,
+    pub ConfigDockingNoSplit: bool,
+    pub ConfigDockingWithShift: bool,
+    pub ConfigDockingAlwaysTabBar: bool,
+    pub ConfigDockingTransparentPayload: bool,
+    pub ConfigViewportsNoAutoMerge: bool,
+    pub ConfigViewportsNoTaskBarIcon: bool,
+    pub ConfigViewportsNoDecoration: bool,
+    pub ConfigViewportsNoDefaultParent: bool,
     pub MouseDrawCursor: bool,
     pub ConfigMacOSXBehaviors: bool,
     pub ConfigInputTextCursorBlink: bool,
@@ -1288,13 +1387,11 @@ pub struct ImGuiIO {
         unsafe extern "C" fn(user_data: *mut cty::c_void, text: *const cty::c_char),
     >,
     pub ClipboardUserData: *mut cty::c_void,
-    pub ImeSetInputScreenPosFn:
-        ::core::option::Option<unsafe extern "C" fn(x: cty::c_int, y: cty::c_int)>,
-    pub ImeWindowHandle: *mut cty::c_void,
     pub MousePos: ImVec2,
     pub MouseDown: [bool; 5usize],
     pub MouseWheel: f32,
     pub MouseWheelH: f32,
+    pub MouseHoveredViewport: ImGuiID,
     pub KeyCtrl: bool,
     pub KeyShift: bool,
     pub KeyAlt: bool,
@@ -1343,7 +1440,7 @@ impl Default for ImGuiIO {
 }
 impl ::core::fmt::Debug for ImGuiIO {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-        write ! (f , "ImGuiIO {{ ConfigFlags: {:?}, BackendFlags: {:?}, DisplaySize: {:?}, DeltaTime: {:?}, IniSavingRate: {:?}, IniFilename: {:?}, LogFilename: {:?}, MouseDoubleClickTime: {:?}, MouseDoubleClickMaxDist: {:?}, MouseDragThreshold: {:?}, KeyMap: {:?}, KeyRepeatDelay: {:?}, KeyRepeatRate: {:?}, UserData: {:?}, Fonts: {:?}, FontGlobalScale: {:?}, FontAllowUserScaling: {:?}, FontDefault: {:?}, DisplayFramebufferScale: {:?}, MouseDrawCursor: {:?}, ConfigMacOSXBehaviors: {:?}, ConfigInputTextCursorBlink: {:?}, ConfigDragClickToInputText: {:?}, ConfigWindowsResizeFromEdges: {:?}, ConfigWindowsMoveFromTitleBarOnly: {:?}, ConfigMemoryCompactTimer: {:?}, BackendPlatformName: {:?}, BackendRendererName: {:?}, BackendPlatformUserData: {:?}, BackendRendererUserData: {:?}, BackendLanguageUserData: {:?}, GetClipboardTextFn: {:?}, SetClipboardTextFn: {:?}, ClipboardUserData: {:?}, ImeSetInputScreenPosFn: {:?}, ImeWindowHandle: {:?}, MousePos: {:?}, MouseDown: {:?}, MouseWheel: {:?}, MouseWheelH: {:?}, KeyCtrl: {:?}, KeyShift: {:?}, KeyAlt: {:?}, KeySuper: {:?}, KeysDown: [...], NavInputs: {:?}, WantCaptureMouse: {:?}, WantCaptureKeyboard: {:?}, WantTextInput: {:?}, WantSetMousePos: {:?}, WantSaveIniSettings: {:?}, NavActive: {:?}, NavVisible: {:?}, Framerate: {:?}, MetricsRenderVertices: {:?}, MetricsRenderIndices: {:?}, MetricsRenderWindows: {:?}, MetricsActiveWindows: {:?}, MetricsActiveAllocations: {:?}, MouseDelta: {:?}, KeyMods: {:?}, MousePosPrev: {:?}, MouseClickedPos: {:?}, MouseClickedTime: {:?}, MouseClicked: {:?}, MouseDoubleClicked: {:?}, MouseReleased: {:?}, MouseDownOwned: {:?}, MouseDownWasDoubleClick: {:?}, MouseDownDuration: {:?}, MouseDownDurationPrev: {:?}, MouseDragMaxDistanceAbs: {:?}, MouseDragMaxDistanceSqr: {:?}, KeysDownDuration: [...], KeysDownDurationPrev: [...], NavInputsDownDuration: {:?}, NavInputsDownDurationPrev: {:?}, PenPressure: {:?}, InputQueueSurrogate: {:?}, InputQueueCharacters: {:?} }}" , self . ConfigFlags , self . BackendFlags , self . DisplaySize , self . DeltaTime , self . IniSavingRate , self . IniFilename , self . LogFilename , self . MouseDoubleClickTime , self . MouseDoubleClickMaxDist , self . MouseDragThreshold , self . KeyMap , self . KeyRepeatDelay , self . KeyRepeatRate , self . UserData , self . Fonts , self . FontGlobalScale , self . FontAllowUserScaling , self . FontDefault , self . DisplayFramebufferScale , self . MouseDrawCursor , self . ConfigMacOSXBehaviors , self . ConfigInputTextCursorBlink , self . ConfigDragClickToInputText , self . ConfigWindowsResizeFromEdges , self . ConfigWindowsMoveFromTitleBarOnly , self . ConfigMemoryCompactTimer , self . BackendPlatformName , self . BackendRendererName , self . BackendPlatformUserData , self . BackendRendererUserData , self . BackendLanguageUserData , self . GetClipboardTextFn , self . SetClipboardTextFn , self . ClipboardUserData , self . ImeSetInputScreenPosFn , self . ImeWindowHandle , self . MousePos , self . MouseDown , self . MouseWheel , self . MouseWheelH , self . KeyCtrl , self . KeyShift , self . KeyAlt , self . KeySuper , self . NavInputs , self . WantCaptureMouse , self . WantCaptureKeyboard , self . WantTextInput , self . WantSetMousePos , self . WantSaveIniSettings , self . NavActive , self . NavVisible , self . Framerate , self . MetricsRenderVertices , self . MetricsRenderIndices , self . MetricsRenderWindows , self . MetricsActiveWindows , self . MetricsActiveAllocations , self . MouseDelta , self . KeyMods , self . MousePosPrev , self . MouseClickedPos , self . MouseClickedTime , self . MouseClicked , self . MouseDoubleClicked , self . MouseReleased , self . MouseDownOwned , self . MouseDownWasDoubleClick , self . MouseDownDuration , self . MouseDownDurationPrev , self . MouseDragMaxDistanceAbs , self . MouseDragMaxDistanceSqr , self . NavInputsDownDuration , self . NavInputsDownDurationPrev , self . PenPressure , self . InputQueueSurrogate , self . InputQueueCharacters)
+        write ! (f , "ImGuiIO {{ ConfigFlags: {:?}, BackendFlags: {:?}, DisplaySize: {:?}, DeltaTime: {:?}, IniSavingRate: {:?}, IniFilename: {:?}, LogFilename: {:?}, MouseDoubleClickTime: {:?}, MouseDoubleClickMaxDist: {:?}, MouseDragThreshold: {:?}, KeyMap: {:?}, KeyRepeatDelay: {:?}, KeyRepeatRate: {:?}, UserData: {:?}, Fonts: {:?}, FontGlobalScale: {:?}, FontAllowUserScaling: {:?}, FontDefault: {:?}, DisplayFramebufferScale: {:?}, ConfigDockingNoSplit: {:?}, ConfigDockingWithShift: {:?}, ConfigDockingAlwaysTabBar: {:?}, ConfigDockingTransparentPayload: {:?}, ConfigViewportsNoAutoMerge: {:?}, ConfigViewportsNoTaskBarIcon: {:?}, ConfigViewportsNoDecoration: {:?}, ConfigViewportsNoDefaultParent: {:?}, MouseDrawCursor: {:?}, ConfigMacOSXBehaviors: {:?}, ConfigInputTextCursorBlink: {:?}, ConfigDragClickToInputText: {:?}, ConfigWindowsResizeFromEdges: {:?}, ConfigWindowsMoveFromTitleBarOnly: {:?}, ConfigMemoryCompactTimer: {:?}, BackendPlatformName: {:?}, BackendRendererName: {:?}, BackendPlatformUserData: {:?}, BackendRendererUserData: {:?}, BackendLanguageUserData: {:?}, GetClipboardTextFn: {:?}, SetClipboardTextFn: {:?}, ClipboardUserData: {:?}, MousePos: {:?}, MouseDown: {:?}, MouseWheel: {:?}, MouseWheelH: {:?}, MouseHoveredViewport: {:?}, KeyCtrl: {:?}, KeyShift: {:?}, KeyAlt: {:?}, KeySuper: {:?}, KeysDown: [...], NavInputs: {:?}, WantCaptureMouse: {:?}, WantCaptureKeyboard: {:?}, WantTextInput: {:?}, WantSetMousePos: {:?}, WantSaveIniSettings: {:?}, NavActive: {:?}, NavVisible: {:?}, Framerate: {:?}, MetricsRenderVertices: {:?}, MetricsRenderIndices: {:?}, MetricsRenderWindows: {:?}, MetricsActiveWindows: {:?}, MetricsActiveAllocations: {:?}, MouseDelta: {:?}, KeyMods: {:?}, MousePosPrev: {:?}, MouseClickedPos: {:?}, MouseClickedTime: {:?}, MouseClicked: {:?}, MouseDoubleClicked: {:?}, MouseReleased: {:?}, MouseDownOwned: {:?}, MouseDownWasDoubleClick: {:?}, MouseDownDuration: {:?}, MouseDownDurationPrev: {:?}, MouseDragMaxDistanceAbs: {:?}, MouseDragMaxDistanceSqr: {:?}, KeysDownDuration: [...], KeysDownDurationPrev: [...], NavInputsDownDuration: {:?}, NavInputsDownDurationPrev: {:?}, PenPressure: {:?}, InputQueueSurrogate: {:?}, InputQueueCharacters: {:?} }}" , self . ConfigFlags , self . BackendFlags , self . DisplaySize , self . DeltaTime , self . IniSavingRate , self . IniFilename , self . LogFilename , self . MouseDoubleClickTime , self . MouseDoubleClickMaxDist , self . MouseDragThreshold , self . KeyMap , self . KeyRepeatDelay , self . KeyRepeatRate , self . UserData , self . Fonts , self . FontGlobalScale , self . FontAllowUserScaling , self . FontDefault , self . DisplayFramebufferScale , self . ConfigDockingNoSplit , self . ConfigDockingWithShift , self . ConfigDockingAlwaysTabBar , self . ConfigDockingTransparentPayload , self . ConfigViewportsNoAutoMerge , self . ConfigViewportsNoTaskBarIcon , self . ConfigViewportsNoDecoration , self . ConfigViewportsNoDefaultParent , self . MouseDrawCursor , self . ConfigMacOSXBehaviors , self . ConfigInputTextCursorBlink , self . ConfigDragClickToInputText , self . ConfigWindowsResizeFromEdges , self . ConfigWindowsMoveFromTitleBarOnly , self . ConfigMemoryCompactTimer , self . BackendPlatformName , self . BackendRendererName , self . BackendPlatformUserData , self . BackendRendererUserData , self . BackendLanguageUserData , self . GetClipboardTextFn , self . SetClipboardTextFn , self . ClipboardUserData , self . MousePos , self . MouseDown , self . MouseWheel , self . MouseWheelH , self . MouseHoveredViewport , self . KeyCtrl , self . KeyShift , self . KeyAlt , self . KeySuper , self . NavInputs , self . WantCaptureMouse , self . WantCaptureKeyboard , self . WantTextInput , self . WantSetMousePos , self . WantSaveIniSettings , self . NavActive , self . NavVisible , self . Framerate , self . MetricsRenderVertices , self . MetricsRenderIndices , self . MetricsRenderWindows , self . MetricsActiveWindows , self . MetricsActiveAllocations , self . MouseDelta , self . KeyMods , self . MousePosPrev , self . MouseClickedPos , self . MouseClickedTime , self . MouseClicked , self . MouseDoubleClicked , self . MouseReleased , self . MouseDownOwned , self . MouseDownWasDoubleClick , self . MouseDownDuration , self . MouseDownDurationPrev , self . MouseDragMaxDistanceAbs , self . MouseDragMaxDistanceSqr , self . NavInputsDownDuration , self . NavInputsDownDurationPrev , self . PenPressure , self . InputQueueSurrogate , self . InputQueueCharacters)
     }
 }
 #[repr(C)]
@@ -1379,6 +1476,19 @@ impl Default for ImGuiSizeCallbackData {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImGuiWindowClass {
+    pub ClassId: ImGuiID,
+    pub ParentViewportId: ImGuiID,
+    pub ViewportFlagsOverrideSet: ImGuiViewportFlags,
+    pub ViewportFlagsOverrideClear: ImGuiViewportFlags,
+    pub TabItemFlagsOverrideSet: ImGuiTabItemFlags,
+    pub DockNodeFlagsOverrideSet: ImGuiDockNodeFlags,
+    pub DockNodeFlagsOverrideClear: ImGuiDockNodeFlags,
+    pub DockingAlwaysTabBar: bool,
+    pub DockingAllowUnclassed: bool,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1717,6 +1827,7 @@ pub struct ImDrawData {
     pub DisplayPos: ImVec2,
     pub DisplaySize: ImVec2,
     pub FramebufferScale: ImVec2,
+    pub OwnerViewport: *mut ImGuiViewport,
 }
 impl Default for ImDrawData {
     fn default() -> Self {
@@ -1922,15 +2033,116 @@ pub const ImGuiViewportFlags_None: ImGuiViewportFlags_ = 0;
 pub const ImGuiViewportFlags_IsPlatformWindow: ImGuiViewportFlags_ = 1;
 pub const ImGuiViewportFlags_IsPlatformMonitor: ImGuiViewportFlags_ = 2;
 pub const ImGuiViewportFlags_OwnedByApp: ImGuiViewportFlags_ = 4;
+pub const ImGuiViewportFlags_NoDecoration: ImGuiViewportFlags_ = 8;
+pub const ImGuiViewportFlags_NoTaskBarIcon: ImGuiViewportFlags_ = 16;
+pub const ImGuiViewportFlags_NoFocusOnAppearing: ImGuiViewportFlags_ = 32;
+pub const ImGuiViewportFlags_NoFocusOnClick: ImGuiViewportFlags_ = 64;
+pub const ImGuiViewportFlags_NoInputs: ImGuiViewportFlags_ = 128;
+pub const ImGuiViewportFlags_NoRendererClear: ImGuiViewportFlags_ = 256;
+pub const ImGuiViewportFlags_TopMost: ImGuiViewportFlags_ = 512;
+pub const ImGuiViewportFlags_Minimized: ImGuiViewportFlags_ = 1024;
+pub const ImGuiViewportFlags_NoAutoMerge: ImGuiViewportFlags_ = 2048;
+pub const ImGuiViewportFlags_CanHostOtherWindows: ImGuiViewportFlags_ = 4096;
 pub type ImGuiViewportFlags_ = cty::c_uint;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct ImGuiViewport {
+    pub ID: ImGuiID,
     pub Flags: ImGuiViewportFlags,
     pub Pos: ImVec2,
     pub Size: ImVec2,
     pub WorkPos: ImVec2,
     pub WorkSize: ImVec2,
+    pub DpiScale: f32,
+    pub ParentViewportId: ImGuiID,
+    pub DrawData: *mut ImDrawData,
+    pub RendererUserData: *mut cty::c_void,
+    pub PlatformUserData: *mut cty::c_void,
+    pub PlatformHandle: *mut cty::c_void,
+    pub PlatformHandleRaw: *mut cty::c_void,
+    pub PlatformRequestMove: bool,
+    pub PlatformRequestResize: bool,
+    pub PlatformRequestClose: bool,
+}
+impl Default for ImGuiViewport {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImGuiPlatformIO {
+    pub Platform_CreateWindow: ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Platform_DestroyWindow:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Platform_ShowWindow: ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Platform_SetWindowPos:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport, pos: ImVec2)>,
+    pub Platform_GetWindowPos:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport) -> ImVec2>,
+    pub Platform_SetWindowSize:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport, size: ImVec2)>,
+    pub Platform_GetWindowSize:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport) -> ImVec2>,
+    pub Platform_SetWindowFocus:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Platform_GetWindowFocus:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport) -> bool>,
+    pub Platform_GetWindowMinimized:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport) -> bool>,
+    pub Platform_SetWindowTitle: ::core::option::Option<
+        unsafe extern "C" fn(vp: *mut ImGuiViewport, str_: *const cty::c_char),
+    >,
+    pub Platform_SetWindowAlpha:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport, alpha: f32)>,
+    pub Platform_UpdateWindow: ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Platform_RenderWindow: ::core::option::Option<
+        unsafe extern "C" fn(vp: *mut ImGuiViewport, render_arg: *mut cty::c_void),
+    >,
+    pub Platform_SwapBuffers: ::core::option::Option<
+        unsafe extern "C" fn(vp: *mut ImGuiViewport, render_arg: *mut cty::c_void),
+    >,
+    pub Platform_GetWindowDpiScale:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport) -> f32>,
+    pub Platform_OnChangedViewport:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Platform_SetImeInputPos:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport, pos: ImVec2)>,
+    pub Platform_CreateVkSurface: ::core::option::Option<
+        unsafe extern "C" fn(
+            vp: *mut ImGuiViewport,
+            vk_inst: ImU64,
+            vk_allocators: *const cty::c_void,
+            out_vk_surface: *mut ImU64,
+        ) -> cty::c_int,
+    >,
+    pub Renderer_CreateWindow: ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Renderer_DestroyWindow:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport)>,
+    pub Renderer_SetWindowSize:
+        ::core::option::Option<unsafe extern "C" fn(vp: *mut ImGuiViewport, size: ImVec2)>,
+    pub Renderer_RenderWindow: ::core::option::Option<
+        unsafe extern "C" fn(vp: *mut ImGuiViewport, render_arg: *mut cty::c_void),
+    >,
+    pub Renderer_SwapBuffers: ::core::option::Option<
+        unsafe extern "C" fn(vp: *mut ImGuiViewport, render_arg: *mut cty::c_void),
+    >,
+    pub Monitors: ImVector_ImGuiPlatformMonitor,
+    pub Viewports: ImVector_ImGuiViewportPtr,
+}
+impl Default for ImGuiPlatformIO {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone, PartialEq)]
+pub struct ImGuiPlatformMonitor {
+    pub MainPos: ImVec2,
+    pub MainSize: ImVec2,
+    pub WorkPos: ImVec2,
+    pub WorkSize: ImVec2,
+    pub DpiScale: f32,
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
@@ -2344,6 +2556,9 @@ pub const ImGuiNextWindowDataFlags_HasSizeConstraint: ImGuiNextWindowDataFlags_ 
 pub const ImGuiNextWindowDataFlags_HasFocus: ImGuiNextWindowDataFlags_ = 32;
 pub const ImGuiNextWindowDataFlags_HasBgAlpha: ImGuiNextWindowDataFlags_ = 64;
 pub const ImGuiNextWindowDataFlags_HasScroll: ImGuiNextWindowDataFlags_ = 128;
+pub const ImGuiNextWindowDataFlags_HasViewport: ImGuiNextWindowDataFlags_ = 256;
+pub const ImGuiNextWindowDataFlags_HasDock: ImGuiNextWindowDataFlags_ = 512;
+pub const ImGuiNextWindowDataFlags_HasWindowClass: ImGuiNextWindowDataFlags_ = 1024;
 pub type ImGuiNextWindowDataFlags_ = cty::c_uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -2352,16 +2567,21 @@ pub struct ImGuiNextWindowData {
     pub PosCond: ImGuiCond,
     pub SizeCond: ImGuiCond,
     pub CollapsedCond: ImGuiCond,
+    pub DockCond: ImGuiCond,
     pub PosVal: ImVec2,
     pub PosPivotVal: ImVec2,
     pub SizeVal: ImVec2,
     pub ContentSizeVal: ImVec2,
     pub ScrollVal: ImVec2,
+    pub PosUndock: bool,
     pub CollapsedVal: bool,
     pub SizeConstraintRect: ImRect,
     pub SizeCallback: ImGuiSizeCallback,
     pub SizeCallbackUserData: *mut cty::c_void,
     pub BgAlphaVal: f32,
+    pub ViewportId: ImGuiID,
+    pub DockId: ImGuiID,
+    pub WindowClass: ImGuiWindowClass,
     pub MenuBarOffsetMinVal: ImVec2,
 }
 impl Default for ImGuiNextWindowData {
@@ -2440,14 +2660,351 @@ impl Default for ImGuiOldColumns {
         unsafe { ::core::mem::zeroed() }
     }
 }
+pub const ImGuiDockNodeFlags_DockSpace: ImGuiDockNodeFlagsPrivate_ = 1024;
+pub const ImGuiDockNodeFlags_CentralNode: ImGuiDockNodeFlagsPrivate_ = 2048;
+pub const ImGuiDockNodeFlags_NoTabBar: ImGuiDockNodeFlagsPrivate_ = 4096;
+pub const ImGuiDockNodeFlags_HiddenTabBar: ImGuiDockNodeFlagsPrivate_ = 8192;
+pub const ImGuiDockNodeFlags_NoWindowMenuButton: ImGuiDockNodeFlagsPrivate_ = 16384;
+pub const ImGuiDockNodeFlags_NoCloseButton: ImGuiDockNodeFlagsPrivate_ = 32768;
+pub const ImGuiDockNodeFlags_NoDocking: ImGuiDockNodeFlagsPrivate_ = 65536;
+pub const ImGuiDockNodeFlags_NoDockingSplitMe: ImGuiDockNodeFlagsPrivate_ = 131072;
+pub const ImGuiDockNodeFlags_NoDockingSplitOther: ImGuiDockNodeFlagsPrivate_ = 262144;
+pub const ImGuiDockNodeFlags_NoDockingOverMe: ImGuiDockNodeFlagsPrivate_ = 524288;
+pub const ImGuiDockNodeFlags_NoDockingOverOther: ImGuiDockNodeFlagsPrivate_ = 1048576;
+pub const ImGuiDockNodeFlags_NoResizeX: ImGuiDockNodeFlagsPrivate_ = 2097152;
+pub const ImGuiDockNodeFlags_NoResizeY: ImGuiDockNodeFlagsPrivate_ = 4194304;
+pub const ImGuiDockNodeFlags_SharedFlagsInheritMask_: ImGuiDockNodeFlagsPrivate_ = -1;
+pub const ImGuiDockNodeFlags_NoResizeFlagsMask_: ImGuiDockNodeFlagsPrivate_ = 6291488;
+pub const ImGuiDockNodeFlags_LocalFlagsMask_: ImGuiDockNodeFlagsPrivate_ = 6421616;
+pub const ImGuiDockNodeFlags_LocalFlagsTransferMask_: ImGuiDockNodeFlagsPrivate_ = 6420592;
+pub const ImGuiDockNodeFlags_SavedFlagsMask_: ImGuiDockNodeFlagsPrivate_ = 6421536;
+pub type ImGuiDockNodeFlagsPrivate_ = cty::c_int;
+pub const ImGuiDataAuthority_Auto: ImGuiDataAuthority_ = 0;
+pub const ImGuiDataAuthority_DockNode: ImGuiDataAuthority_ = 1;
+pub const ImGuiDataAuthority_Window: ImGuiDataAuthority_ = 2;
+pub type ImGuiDataAuthority_ = cty::c_uint;
+pub const ImGuiDockNodeState_Unknown: ImGuiDockNodeState = 0;
+pub const ImGuiDockNodeState_HostWindowHiddenBecauseSingleWindow: ImGuiDockNodeState = 1;
+pub const ImGuiDockNodeState_HostWindowHiddenBecauseWindowsAreResizing: ImGuiDockNodeState = 2;
+pub const ImGuiDockNodeState_HostWindowVisible: ImGuiDockNodeState = 3;
+pub type ImGuiDockNodeState = cty::c_uint;
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub struct ImGuiDockNode {
+    pub ID: ImGuiID,
+    pub SharedFlags: ImGuiDockNodeFlags,
+    pub LocalFlags: ImGuiDockNodeFlags,
+    pub State: ImGuiDockNodeState,
+    pub ParentNode: *mut ImGuiDockNode,
+    pub ChildNodes: [*mut ImGuiDockNode; 2usize],
+    pub Windows: ImVector_ImGuiWindowPtr,
+    pub TabBar: *mut ImGuiTabBar,
+    pub Pos: ImVec2,
+    pub Size: ImVec2,
+    pub SizeRef: ImVec2,
+    pub SplitAxis: ImGuiAxis,
+    pub WindowClass: ImGuiWindowClass,
+    pub HostWindow: *mut ImGuiWindow,
+    pub VisibleWindow: *mut ImGuiWindow,
+    pub CentralNode: *mut ImGuiDockNode,
+    pub OnlyNodeWithWindows: *mut ImGuiDockNode,
+    pub LastFrameAlive: cty::c_int,
+    pub LastFrameActive: cty::c_int,
+    pub LastFrameFocused: cty::c_int,
+    pub LastFocusedNodeId: ImGuiID,
+    pub SelectedTabId: ImGuiID,
+    pub WantCloseTabId: ImGuiID,
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 3usize], u8>,
+    pub __bindgen_padding_0: [u8; 5usize],
+}
+impl Default for ImGuiDockNode {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
+impl ImGuiDockNode {
+    #[inline]
+    pub fn AuthorityForPos(&self) -> ImGuiDataAuthority {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 3u8) as u32) }
+    }
+    #[inline]
+    pub fn set_AuthorityForPos(&mut self, val: ImGuiDataAuthority) {
+        unsafe {
+            let val: u32 = ::core::mem::transmute(val);
+            self._bitfield_1.set(0usize, 3u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn AuthorityForSize(&self) -> ImGuiDataAuthority {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 3u8) as u32) }
+    }
+    #[inline]
+    pub fn set_AuthorityForSize(&mut self, val: ImGuiDataAuthority) {
+        unsafe {
+            let val: u32 = ::core::mem::transmute(val);
+            self._bitfield_1.set(3usize, 3u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn AuthorityForViewport(&self) -> ImGuiDataAuthority {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 3u8) as u32) }
+    }
+    #[inline]
+    pub fn set_AuthorityForViewport(&mut self, val: ImGuiDataAuthority) {
+        unsafe {
+            let val: u32 = ::core::mem::transmute(val);
+            self._bitfield_1.set(6usize, 3u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn IsVisible(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(9usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_IsVisible(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(9usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn IsFocused(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(10usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_IsFocused(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(10usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn HasCloseButton(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(11usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_HasCloseButton(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(11usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn HasWindowMenuButton(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(12usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_HasWindowMenuButton(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(12usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn EnableCloseButton(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(13usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_EnableCloseButton(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(13usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn WantCloseAll(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(14usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_WantCloseAll(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(14usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn WantLockSizeOnce(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(15usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_WantLockSizeOnce(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(15usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn WantMouseMove(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(16usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_WantMouseMove(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(16usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn WantHiddenTabBarUpdate(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(17usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_WantHiddenTabBarUpdate(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(17usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn WantHiddenTabBarToggle(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(18usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_WantHiddenTabBarToggle(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(18usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn MarkedForPosSizeWrite(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(19usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_MarkedForPosSizeWrite(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(19usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn new_bitfield_1(
+        AuthorityForPos: ImGuiDataAuthority,
+        AuthorityForSize: ImGuiDataAuthority,
+        AuthorityForViewport: ImGuiDataAuthority,
+        IsVisible: bool,
+        IsFocused: bool,
+        HasCloseButton: bool,
+        HasWindowMenuButton: bool,
+        EnableCloseButton: bool,
+        WantCloseAll: bool,
+        WantLockSizeOnce: bool,
+        WantMouseMove: bool,
+        WantHiddenTabBarUpdate: bool,
+        WantHiddenTabBarToggle: bool,
+        MarkedForPosSizeWrite: bool,
+    ) -> __BindgenBitfieldUnit<[u8; 3usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 3usize], u8> =
+            Default::default();
+        __bindgen_bitfield_unit.set(0usize, 3u8, {
+            let AuthorityForPos: u32 = unsafe { ::core::mem::transmute(AuthorityForPos) };
+            AuthorityForPos as u64
+        });
+        __bindgen_bitfield_unit.set(3usize, 3u8, {
+            let AuthorityForSize: u32 = unsafe { ::core::mem::transmute(AuthorityForSize) };
+            AuthorityForSize as u64
+        });
+        __bindgen_bitfield_unit.set(6usize, 3u8, {
+            let AuthorityForViewport: u32 = unsafe { ::core::mem::transmute(AuthorityForViewport) };
+            AuthorityForViewport as u64
+        });
+        __bindgen_bitfield_unit.set(9usize, 1u8, {
+            let IsVisible: u8 = unsafe { ::core::mem::transmute(IsVisible) };
+            IsVisible as u64
+        });
+        __bindgen_bitfield_unit.set(10usize, 1u8, {
+            let IsFocused: u8 = unsafe { ::core::mem::transmute(IsFocused) };
+            IsFocused as u64
+        });
+        __bindgen_bitfield_unit.set(11usize, 1u8, {
+            let HasCloseButton: u8 = unsafe { ::core::mem::transmute(HasCloseButton) };
+            HasCloseButton as u64
+        });
+        __bindgen_bitfield_unit.set(12usize, 1u8, {
+            let HasWindowMenuButton: u8 = unsafe { ::core::mem::transmute(HasWindowMenuButton) };
+            HasWindowMenuButton as u64
+        });
+        __bindgen_bitfield_unit.set(13usize, 1u8, {
+            let EnableCloseButton: u8 = unsafe { ::core::mem::transmute(EnableCloseButton) };
+            EnableCloseButton as u64
+        });
+        __bindgen_bitfield_unit.set(14usize, 1u8, {
+            let WantCloseAll: u8 = unsafe { ::core::mem::transmute(WantCloseAll) };
+            WantCloseAll as u64
+        });
+        __bindgen_bitfield_unit.set(15usize, 1u8, {
+            let WantLockSizeOnce: u8 = unsafe { ::core::mem::transmute(WantLockSizeOnce) };
+            WantLockSizeOnce as u64
+        });
+        __bindgen_bitfield_unit.set(16usize, 1u8, {
+            let WantMouseMove: u8 = unsafe { ::core::mem::transmute(WantMouseMove) };
+            WantMouseMove as u64
+        });
+        __bindgen_bitfield_unit.set(17usize, 1u8, {
+            let WantHiddenTabBarUpdate: u8 =
+                unsafe { ::core::mem::transmute(WantHiddenTabBarUpdate) };
+            WantHiddenTabBarUpdate as u64
+        });
+        __bindgen_bitfield_unit.set(18usize, 1u8, {
+            let WantHiddenTabBarToggle: u8 =
+                unsafe { ::core::mem::transmute(WantHiddenTabBarToggle) };
+            WantHiddenTabBarToggle as u64
+        });
+        __bindgen_bitfield_unit.set(19usize, 1u8, {
+            let MarkedForPosSizeWrite: u8 =
+                unsafe { ::core::mem::transmute(MarkedForPosSizeWrite) };
+            MarkedForPosSizeWrite as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+pub const ImGuiWindowDockStyleCol_Text: ImGuiWindowDockStyleCol = 0;
+pub const ImGuiWindowDockStyleCol_Tab: ImGuiWindowDockStyleCol = 1;
+pub const ImGuiWindowDockStyleCol_TabHovered: ImGuiWindowDockStyleCol = 2;
+pub const ImGuiWindowDockStyleCol_TabActive: ImGuiWindowDockStyleCol = 3;
+pub const ImGuiWindowDockStyleCol_TabUnfocused: ImGuiWindowDockStyleCol = 4;
+pub const ImGuiWindowDockStyleCol_TabUnfocusedActive: ImGuiWindowDockStyleCol = 5;
+pub const ImGuiWindowDockStyleCol_COUNT: ImGuiWindowDockStyleCol = 6;
+pub type ImGuiWindowDockStyleCol = cty::c_uint;
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImGuiWindowDockStyle {
+    pub Colors: [ImU32; 6usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub struct ImGuiDockContext {
+    pub Nodes: ImGuiStorage,
+    pub Requests: ImVector_ImGuiDockRequest,
+    pub NodesSettings: ImVector_ImGuiDockNodeSettings,
+    pub WantFullRebuild: bool,
+}
+impl Default for ImGuiDockContext {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct ImGuiViewportP {
     pub _ImGuiViewport: ImGuiViewport,
+    pub Idx: cty::c_int,
+    pub LastFrameActive: cty::c_int,
+    pub LastFrontMostStampCount: cty::c_int,
+    pub LastNameHash: ImGuiID,
+    pub LastPos: ImVec2,
+    pub Alpha: f32,
+    pub LastAlpha: f32,
+    pub PlatformMonitor: cty::c_short,
+    pub PlatformWindowCreated: bool,
+    pub Window: *mut ImGuiWindow,
     pub DrawListsLastFrame: [cty::c_int; 2usize],
     pub DrawLists: [*mut ImDrawList; 2usize],
     pub DrawDataP: ImDrawData,
     pub DrawDataBuilder: ImDrawDataBuilder,
+    pub LastPlatformPos: ImVec2,
+    pub LastPlatformSize: ImVec2,
+    pub LastRendererSize: ImVec2,
     pub WorkOffsetMin: ImVec2,
     pub WorkOffsetMax: ImVec2,
     pub CurrWorkOffsetMin: ImVec2,
@@ -2464,6 +3021,11 @@ pub struct ImGuiWindowSettings {
     pub ID: ImGuiID,
     pub Pos: ImVec2ih,
     pub Size: ImVec2ih,
+    pub ViewportPos: ImVec2ih,
+    pub ViewportId: ImGuiID,
+    pub DockId: ImGuiID,
+    pub ClassId: ImGuiID,
+    pub DockOrder: cty::c_short,
     pub Collapsed: bool,
     pub WantApply: bool,
 }
@@ -2518,6 +3080,7 @@ pub struct ImGuiMetricsConfig {
     pub ShowTablesRects: bool,
     pub ShowDrawCmdMesh: bool,
     pub ShowDrawCmdBoundingBoxes: bool,
+    pub ShowDockingNodes: bool,
     pub ShowWindowsRectsType: cty::c_int,
     pub ShowTablesRectsType: cty::c_int,
 }
@@ -2561,7 +3124,10 @@ pub struct ImGuiContext {
     pub Initialized: bool,
     pub FontAtlasOwnedByContext: bool,
     pub IO: ImGuiIO,
+    pub PlatformIO: ImGuiPlatformIO,
     pub Style: ImGuiStyle,
+    pub ConfigFlagsCurrFrame: ImGuiConfigFlags,
+    pub ConfigFlagsLastFrame: ImGuiConfigFlags,
     pub Font: *mut ImFont,
     pub FontSize: f32,
     pub FontBaseSize: f32,
@@ -2569,6 +3135,7 @@ pub struct ImGuiContext {
     pub Time: f64,
     pub FrameCount: cty::c_int,
     pub FrameCountEnded: cty::c_int,
+    pub FrameCountPlatformEnded: cty::c_int,
     pub FrameCountRendered: cty::c_int,
     pub WithinFrameScope: bool,
     pub WithinFrameScopeWithImplicitWindow: bool,
@@ -2587,6 +3154,7 @@ pub struct ImGuiContext {
     pub HoveredWindow: *mut ImGuiWindow,
     pub HoveredRootWindow: *mut ImGuiWindow,
     pub HoveredWindowUnderMovingWindow: *mut ImGuiWindow,
+    pub HoveredDockNode: *mut ImGuiDockNode,
     pub MovingWindow: *mut ImGuiWindow,
     pub WheelingWindow: *mut ImGuiWindow,
     pub WheelingWindowRefMousePos: ImVec2,
@@ -2633,6 +3201,12 @@ pub struct ImGuiContext {
     pub OpenPopupStack: ImVector_ImGuiPopupData,
     pub BeginPopupStack: ImVector_ImGuiPopupData,
     pub Viewports: ImVector_ImGuiViewportPPtr,
+    pub CurrentDpiScale: f32,
+    pub CurrentViewport: *mut ImGuiViewportP,
+    pub MouseViewport: *mut ImGuiViewportP,
+    pub MouseLastHoveredViewport: *mut ImGuiViewportP,
+    pub PlatformLastFocusedViewportId: ImGuiID,
+    pub ViewportFrontMostStampCount: cty::c_int,
     pub NavWindow: *mut ImGuiWindow,
     pub NavId: ImGuiID,
     pub NavFocusScopeId: ImGuiID,
@@ -2733,7 +3307,9 @@ pub struct ImGuiContext {
     pub MenusIdSubmittedThisFrame: ImVector_ImGuiID,
     pub PlatformImePos: ImVec2,
     pub PlatformImeLastPos: ImVec2,
+    pub PlatformImePosViewport: *mut ImGuiViewportP,
     pub PlatformLocaleDecimalPoint: cty::c_char,
+    pub DockContext: ImGuiDockContext,
     pub SettingsLoaded: bool,
     pub SettingsDirtyTimer: f32,
     pub SettingsIniData: ImGuiTextBuffer,
@@ -2771,7 +3347,7 @@ impl Default for ImGuiContext {
 }
 impl ::core::fmt::Debug for ImGuiContext {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-        write ! (f , "ImGuiContext {{ Initialized: {:?}, FontAtlasOwnedByContext: {:?}, IO: {:?}, Style: {:?}, Font: {:?}, FontSize: {:?}, FontBaseSize: {:?}, DrawListSharedData: {:?}, Time: {:?}, FrameCount: {:?}, FrameCountEnded: {:?}, FrameCountRendered: {:?}, WithinFrameScope: {:?}, WithinFrameScopeWithImplicitWindow: {:?}, WithinEndChild: {:?}, GcCompactAll: {:?}, TestEngineHookItems: {:?}, TestEngineHookIdInfo: {:?}, TestEngine: {:?}, Windows: {:?}, WindowsFocusOrder: {:?}, WindowsTempSortBuffer: {:?}, CurrentWindowStack: {:?}, WindowsById: {:?}, WindowsActiveCount: {:?}, CurrentWindow: {:?}, HoveredWindow: {:?}, HoveredRootWindow: {:?}, HoveredWindowUnderMovingWindow: {:?}, MovingWindow: {:?}, WheelingWindow: {:?}, WheelingWindowRefMousePos: {:?}, WheelingWindowTimer: {:?}, HoveredId: {:?}, HoveredIdPreviousFrame: {:?}, HoveredIdAllowOverlap: {:?}, HoveredIdUsingMouseWheel: {:?}, HoveredIdPreviousFrameUsingMouseWheel: {:?}, HoveredIdDisabled: {:?}, HoveredIdTimer: {:?}, HoveredIdNotActiveTimer: {:?}, ActiveId: {:?}, ActiveIdIsAlive: {:?}, ActiveIdTimer: {:?}, ActiveIdIsJustActivated: {:?}, ActiveIdAllowOverlap: {:?}, ActiveIdNoClearOnFocusLoss: {:?}, ActiveIdHasBeenPressedBefore: {:?}, ActiveIdHasBeenEditedBefore: {:?}, ActiveIdHasBeenEditedThisFrame: {:?}, ActiveIdUsingMouseWheel: {:?}, ActiveIdUsingNavDirMask: {:?}, ActiveIdUsingNavInputMask: {:?}, ActiveIdUsingKeyInputMask: {:?}, ActiveIdClickOffset: {:?}, ActiveIdWindow: {:?}, ActiveIdSource: {:?}, ActiveIdMouseButton: {:?}, ActiveIdPreviousFrame: {:?}, ActiveIdPreviousFrameIsAlive: {:?}, ActiveIdPreviousFrameHasBeenEditedBefore: {:?}, ActiveIdPreviousFrameWindow: {:?}, LastActiveId: {:?}, LastActiveIdTimer: {:?}, NextWindowData: {:?}, NextItemData: {:?}, ColorStack: {:?}, StyleVarStack: {:?}, FontStack: {:?}, FocusScopeStack: {:?}, ItemFlagsStack: {:?}, GroupStack: {:?}, OpenPopupStack: {:?}, BeginPopupStack: {:?}, Viewports: {:?}, NavWindow: {:?}, NavId: {:?}, NavFocusScopeId: {:?}, NavActivateId: {:?}, NavActivateDownId: {:?}, NavActivatePressedId: {:?}, NavInputId: {:?}, NavJustTabbedId: {:?}, NavJustMovedToId: {:?}, NavJustMovedToFocusScopeId: {:?}, NavJustMovedToKeyMods: {:?}, NavNextActivateId: {:?}, NavInputSource: {:?}, NavScoringRect: {:?}, NavScoringCount: {:?}, NavLayer: {:?}, NavIdTabCounter: {:?}, NavIdIsAlive: {:?}, NavMousePosDirty: {:?}, NavDisableHighlight: {:?}, NavDisableMouseHover: {:?}, NavAnyRequest: {:?}, NavInitRequest: {:?}, NavInitRequestFromMove: {:?}, NavInitResultId: {:?}, NavInitResultRectRel: {:?}, NavMoveRequest: {:?}, NavMoveRequestFlags: {:?}, NavMoveRequestForward: {:?}, NavMoveRequestKeyMods: {:?}, NavMoveDir: {:?}, NavMoveDirLast: {:?}, NavMoveClipDir: {:?}, NavMoveResultLocal: {:?}, NavMoveResultLocalVisibleSet: {:?}, NavMoveResultOther: {:?}, NavWrapRequestWindow: {:?}, NavWrapRequestFlags: {:?}, NavWindowingTarget: {:?}, NavWindowingTargetAnim: {:?}, NavWindowingListWindow: {:?}, NavWindowingTimer: {:?}, NavWindowingHighlightAlpha: {:?}, NavWindowingToggleLayer: {:?}, FocusRequestCurrWindow: {:?}, FocusRequestNextWindow: {:?}, FocusRequestCurrCounterRegular: {:?}, FocusRequestCurrCounterTabStop: {:?}, FocusRequestNextCounterRegular: {:?}, FocusRequestNextCounterTabStop: {:?}, FocusTabPressed: {:?}, DimBgRatio: {:?}, MouseCursor: {:?}, DragDropActive: {:?}, DragDropWithinSource: {:?}, DragDropWithinTarget: {:?}, DragDropSourceFlags: {:?}, DragDropSourceFrameCount: {:?}, DragDropMouseButton: {:?}, DragDropPayload: {:?}, DragDropTargetRect: {:?}, DragDropTargetId: {:?}, DragDropAcceptFlags: {:?}, DragDropAcceptIdCurrRectSurface: {:?}, DragDropAcceptIdCurr: {:?}, DragDropAcceptIdPrev: {:?}, DragDropAcceptFrameCount: {:?}, DragDropHoldJustPressedId: {:?}, DragDropPayloadBufHeap: {:?}, DragDropPayloadBufLocal: {:?}, CurrentTable: {:?}, Tables: {:?}, CurrentTableStack: {:?}, TablesLastTimeActive: {:?}, DrawChannelsTempMergeBuffer: {:?}, CurrentTabBar: {:?}, TabBars: {:?}, CurrentTabBarStack: {:?}, ShrinkWidthBuffer: {:?}, LastValidMousePos: {:?}, InputTextState: {:?}, InputTextPasswordFont: {:?}, TempInputId: {:?}, ColorEditOptions: {:?}, ColorEditLastHue: {:?}, ColorEditLastSat: {:?}, ColorEditLastColor: {:?}, ColorPickerRef: {:?}, SliderCurrentAccum: {:?}, SliderCurrentAccumDirty: {:?}, DragCurrentAccumDirty: {:?}, DragCurrentAccum: {:?}, DragSpeedDefaultRatio: {:?}, ScrollbarClickDeltaToGrabCenter: {:?}, TooltipOverrideCount: {:?}, TooltipSlowDelay: {:?}, ClipboardHandlerData: {:?}, MenusIdSubmittedThisFrame: {:?}, PlatformImePos: {:?}, PlatformImeLastPos: {:?}, PlatformLocaleDecimalPoint: {:?}, SettingsLoaded: {:?}, SettingsDirtyTimer: {:?}, SettingsIniData: {:?}, SettingsHandlers: {:?}, SettingsWindows: {:?}, SettingsTables: {:?}, Hooks: {:?}, HookIdNext: {:?}, LogEnabled: {:?}, LogType: {:?}, LogFile: {:?}, LogBuffer: {:?}, LogNextPrefix: {:?}, LogNextSuffix: {:?}, LogLinePosY: {:?}, LogLineFirstItem: {:?}, LogDepthRef: {:?}, LogDepthToExpand: {:?}, LogDepthToExpandDefault: {:?}, DebugItemPickerActive: {:?}, DebugItemPickerBreakId: {:?}, DebugMetricsConfig: {:?}, FramerateSecPerFrame: [...], FramerateSecPerFrameIdx: {:?}, FramerateSecPerFrameAccum: {:?}, WantCaptureMouseNextFrame: {:?}, WantCaptureKeyboardNextFrame: {:?}, WantTextInputNextFrame: {:?}, TempBuffer: [...] }}" , self . Initialized , self . FontAtlasOwnedByContext , self . IO , self . Style , self . Font , self . FontSize , self . FontBaseSize , self . DrawListSharedData , self . Time , self . FrameCount , self . FrameCountEnded , self . FrameCountRendered , self . WithinFrameScope , self . WithinFrameScopeWithImplicitWindow , self . WithinEndChild , self . GcCompactAll , self . TestEngineHookItems , self . TestEngineHookIdInfo , self . TestEngine , self . Windows , self . WindowsFocusOrder , self . WindowsTempSortBuffer , self . CurrentWindowStack , self . WindowsById , self . WindowsActiveCount , self . CurrentWindow , self . HoveredWindow , self . HoveredRootWindow , self . HoveredWindowUnderMovingWindow , self . MovingWindow , self . WheelingWindow , self . WheelingWindowRefMousePos , self . WheelingWindowTimer , self . HoveredId , self . HoveredIdPreviousFrame , self . HoveredIdAllowOverlap , self . HoveredIdUsingMouseWheel , self . HoveredIdPreviousFrameUsingMouseWheel , self . HoveredIdDisabled , self . HoveredIdTimer , self . HoveredIdNotActiveTimer , self . ActiveId , self . ActiveIdIsAlive , self . ActiveIdTimer , self . ActiveIdIsJustActivated , self . ActiveIdAllowOverlap , self . ActiveIdNoClearOnFocusLoss , self . ActiveIdHasBeenPressedBefore , self . ActiveIdHasBeenEditedBefore , self . ActiveIdHasBeenEditedThisFrame , self . ActiveIdUsingMouseWheel , self . ActiveIdUsingNavDirMask , self . ActiveIdUsingNavInputMask , self . ActiveIdUsingKeyInputMask , self . ActiveIdClickOffset , self . ActiveIdWindow , self . ActiveIdSource , self . ActiveIdMouseButton , self . ActiveIdPreviousFrame , self . ActiveIdPreviousFrameIsAlive , self . ActiveIdPreviousFrameHasBeenEditedBefore , self . ActiveIdPreviousFrameWindow , self . LastActiveId , self . LastActiveIdTimer , self . NextWindowData , self . NextItemData , self . ColorStack , self . StyleVarStack , self . FontStack , self . FocusScopeStack , self . ItemFlagsStack , self . GroupStack , self . OpenPopupStack , self . BeginPopupStack , self . Viewports , self . NavWindow , self . NavId , self . NavFocusScopeId , self . NavActivateId , self . NavActivateDownId , self . NavActivatePressedId , self . NavInputId , self . NavJustTabbedId , self . NavJustMovedToId , self . NavJustMovedToFocusScopeId , self . NavJustMovedToKeyMods , self . NavNextActivateId , self . NavInputSource , self . NavScoringRect , self . NavScoringCount , self . NavLayer , self . NavIdTabCounter , self . NavIdIsAlive , self . NavMousePosDirty , self . NavDisableHighlight , self . NavDisableMouseHover , self . NavAnyRequest , self . NavInitRequest , self . NavInitRequestFromMove , self . NavInitResultId , self . NavInitResultRectRel , self . NavMoveRequest , self . NavMoveRequestFlags , self . NavMoveRequestForward , self . NavMoveRequestKeyMods , self . NavMoveDir , self . NavMoveDirLast , self . NavMoveClipDir , self . NavMoveResultLocal , self . NavMoveResultLocalVisibleSet , self . NavMoveResultOther , self . NavWrapRequestWindow , self . NavWrapRequestFlags , self . NavWindowingTarget , self . NavWindowingTargetAnim , self . NavWindowingListWindow , self . NavWindowingTimer , self . NavWindowingHighlightAlpha , self . NavWindowingToggleLayer , self . FocusRequestCurrWindow , self . FocusRequestNextWindow , self . FocusRequestCurrCounterRegular , self . FocusRequestCurrCounterTabStop , self . FocusRequestNextCounterRegular , self . FocusRequestNextCounterTabStop , self . FocusTabPressed , self . DimBgRatio , self . MouseCursor , self . DragDropActive , self . DragDropWithinSource , self . DragDropWithinTarget , self . DragDropSourceFlags , self . DragDropSourceFrameCount , self . DragDropMouseButton , self . DragDropPayload , self . DragDropTargetRect , self . DragDropTargetId , self . DragDropAcceptFlags , self . DragDropAcceptIdCurrRectSurface , self . DragDropAcceptIdCurr , self . DragDropAcceptIdPrev , self . DragDropAcceptFrameCount , self . DragDropHoldJustPressedId , self . DragDropPayloadBufHeap , self . DragDropPayloadBufLocal , self . CurrentTable , self . Tables , self . CurrentTableStack , self . TablesLastTimeActive , self . DrawChannelsTempMergeBuffer , self . CurrentTabBar , self . TabBars , self . CurrentTabBarStack , self . ShrinkWidthBuffer , self . LastValidMousePos , self . InputTextState , self . InputTextPasswordFont , self . TempInputId , self . ColorEditOptions , self . ColorEditLastHue , self . ColorEditLastSat , self . ColorEditLastColor , self . ColorPickerRef , self . SliderCurrentAccum , self . SliderCurrentAccumDirty , self . DragCurrentAccumDirty , self . DragCurrentAccum , self . DragSpeedDefaultRatio , self . ScrollbarClickDeltaToGrabCenter , self . TooltipOverrideCount , self . TooltipSlowDelay , self . ClipboardHandlerData , self . MenusIdSubmittedThisFrame , self . PlatformImePos , self . PlatformImeLastPos , self . PlatformLocaleDecimalPoint , self . SettingsLoaded , self . SettingsDirtyTimer , self . SettingsIniData , self . SettingsHandlers , self . SettingsWindows , self . SettingsTables , self . Hooks , self . HookIdNext , self . LogEnabled , self . LogType , self . LogFile , self . LogBuffer , self . LogNextPrefix , self . LogNextSuffix , self . LogLinePosY , self . LogLineFirstItem , self . LogDepthRef , self . LogDepthToExpand , self . LogDepthToExpandDefault , self . DebugItemPickerActive , self . DebugItemPickerBreakId , self . DebugMetricsConfig , self . FramerateSecPerFrameIdx , self . FramerateSecPerFrameAccum , self . WantCaptureMouseNextFrame , self . WantCaptureKeyboardNextFrame , self . WantTextInputNextFrame)
+        write ! (f , "ImGuiContext {{ Initialized: {:?}, FontAtlasOwnedByContext: {:?}, IO: {:?}, PlatformIO: {:?}, Style: {:?}, ConfigFlagsCurrFrame: {:?}, ConfigFlagsLastFrame: {:?}, Font: {:?}, FontSize: {:?}, FontBaseSize: {:?}, DrawListSharedData: {:?}, Time: {:?}, FrameCount: {:?}, FrameCountEnded: {:?}, FrameCountPlatformEnded: {:?}, FrameCountRendered: {:?}, WithinFrameScope: {:?}, WithinFrameScopeWithImplicitWindow: {:?}, WithinEndChild: {:?}, GcCompactAll: {:?}, TestEngineHookItems: {:?}, TestEngineHookIdInfo: {:?}, TestEngine: {:?}, Windows: {:?}, WindowsFocusOrder: {:?}, WindowsTempSortBuffer: {:?}, CurrentWindowStack: {:?}, WindowsById: {:?}, WindowsActiveCount: {:?}, CurrentWindow: {:?}, HoveredWindow: {:?}, HoveredRootWindow: {:?}, HoveredWindowUnderMovingWindow: {:?}, HoveredDockNode: {:?}, MovingWindow: {:?}, WheelingWindow: {:?}, WheelingWindowRefMousePos: {:?}, WheelingWindowTimer: {:?}, HoveredId: {:?}, HoveredIdPreviousFrame: {:?}, HoveredIdAllowOverlap: {:?}, HoveredIdUsingMouseWheel: {:?}, HoveredIdPreviousFrameUsingMouseWheel: {:?}, HoveredIdDisabled: {:?}, HoveredIdTimer: {:?}, HoveredIdNotActiveTimer: {:?}, ActiveId: {:?}, ActiveIdIsAlive: {:?}, ActiveIdTimer: {:?}, ActiveIdIsJustActivated: {:?}, ActiveIdAllowOverlap: {:?}, ActiveIdNoClearOnFocusLoss: {:?}, ActiveIdHasBeenPressedBefore: {:?}, ActiveIdHasBeenEditedBefore: {:?}, ActiveIdHasBeenEditedThisFrame: {:?}, ActiveIdUsingMouseWheel: {:?}, ActiveIdUsingNavDirMask: {:?}, ActiveIdUsingNavInputMask: {:?}, ActiveIdUsingKeyInputMask: {:?}, ActiveIdClickOffset: {:?}, ActiveIdWindow: {:?}, ActiveIdSource: {:?}, ActiveIdMouseButton: {:?}, ActiveIdPreviousFrame: {:?}, ActiveIdPreviousFrameIsAlive: {:?}, ActiveIdPreviousFrameHasBeenEditedBefore: {:?}, ActiveIdPreviousFrameWindow: {:?}, LastActiveId: {:?}, LastActiveIdTimer: {:?}, NextWindowData: {:?}, NextItemData: {:?}, ColorStack: {:?}, StyleVarStack: {:?}, FontStack: {:?}, FocusScopeStack: {:?}, ItemFlagsStack: {:?}, GroupStack: {:?}, OpenPopupStack: {:?}, BeginPopupStack: {:?}, Viewports: {:?}, CurrentDpiScale: {:?}, CurrentViewport: {:?}, MouseViewport: {:?}, MouseLastHoveredViewport: {:?}, PlatformLastFocusedViewportId: {:?}, ViewportFrontMostStampCount: {:?}, NavWindow: {:?}, NavId: {:?}, NavFocusScopeId: {:?}, NavActivateId: {:?}, NavActivateDownId: {:?}, NavActivatePressedId: {:?}, NavInputId: {:?}, NavJustTabbedId: {:?}, NavJustMovedToId: {:?}, NavJustMovedToFocusScopeId: {:?}, NavJustMovedToKeyMods: {:?}, NavNextActivateId: {:?}, NavInputSource: {:?}, NavScoringRect: {:?}, NavScoringCount: {:?}, NavLayer: {:?}, NavIdTabCounter: {:?}, NavIdIsAlive: {:?}, NavMousePosDirty: {:?}, NavDisableHighlight: {:?}, NavDisableMouseHover: {:?}, NavAnyRequest: {:?}, NavInitRequest: {:?}, NavInitRequestFromMove: {:?}, NavInitResultId: {:?}, NavInitResultRectRel: {:?}, NavMoveRequest: {:?}, NavMoveRequestFlags: {:?}, NavMoveRequestForward: {:?}, NavMoveRequestKeyMods: {:?}, NavMoveDir: {:?}, NavMoveDirLast: {:?}, NavMoveClipDir: {:?}, NavMoveResultLocal: {:?}, NavMoveResultLocalVisibleSet: {:?}, NavMoveResultOther: {:?}, NavWrapRequestWindow: {:?}, NavWrapRequestFlags: {:?}, NavWindowingTarget: {:?}, NavWindowingTargetAnim: {:?}, NavWindowingListWindow: {:?}, NavWindowingTimer: {:?}, NavWindowingHighlightAlpha: {:?}, NavWindowingToggleLayer: {:?}, FocusRequestCurrWindow: {:?}, FocusRequestNextWindow: {:?}, FocusRequestCurrCounterRegular: {:?}, FocusRequestCurrCounterTabStop: {:?}, FocusRequestNextCounterRegular: {:?}, FocusRequestNextCounterTabStop: {:?}, FocusTabPressed: {:?}, DimBgRatio: {:?}, MouseCursor: {:?}, DragDropActive: {:?}, DragDropWithinSource: {:?}, DragDropWithinTarget: {:?}, DragDropSourceFlags: {:?}, DragDropSourceFrameCount: {:?}, DragDropMouseButton: {:?}, DragDropPayload: {:?}, DragDropTargetRect: {:?}, DragDropTargetId: {:?}, DragDropAcceptFlags: {:?}, DragDropAcceptIdCurrRectSurface: {:?}, DragDropAcceptIdCurr: {:?}, DragDropAcceptIdPrev: {:?}, DragDropAcceptFrameCount: {:?}, DragDropHoldJustPressedId: {:?}, DragDropPayloadBufHeap: {:?}, DragDropPayloadBufLocal: {:?}, CurrentTable: {:?}, Tables: {:?}, CurrentTableStack: {:?}, TablesLastTimeActive: {:?}, DrawChannelsTempMergeBuffer: {:?}, CurrentTabBar: {:?}, TabBars: {:?}, CurrentTabBarStack: {:?}, ShrinkWidthBuffer: {:?}, LastValidMousePos: {:?}, InputTextState: {:?}, InputTextPasswordFont: {:?}, TempInputId: {:?}, ColorEditOptions: {:?}, ColorEditLastHue: {:?}, ColorEditLastSat: {:?}, ColorEditLastColor: {:?}, ColorPickerRef: {:?}, SliderCurrentAccum: {:?}, SliderCurrentAccumDirty: {:?}, DragCurrentAccumDirty: {:?}, DragCurrentAccum: {:?}, DragSpeedDefaultRatio: {:?}, ScrollbarClickDeltaToGrabCenter: {:?}, TooltipOverrideCount: {:?}, TooltipSlowDelay: {:?}, ClipboardHandlerData: {:?}, MenusIdSubmittedThisFrame: {:?}, PlatformImePos: {:?}, PlatformImeLastPos: {:?}, PlatformImePosViewport: {:?}, PlatformLocaleDecimalPoint: {:?}, DockContext: {:?}, SettingsLoaded: {:?}, SettingsDirtyTimer: {:?}, SettingsIniData: {:?}, SettingsHandlers: {:?}, SettingsWindows: {:?}, SettingsTables: {:?}, Hooks: {:?}, HookIdNext: {:?}, LogEnabled: {:?}, LogType: {:?}, LogFile: {:?}, LogBuffer: {:?}, LogNextPrefix: {:?}, LogNextSuffix: {:?}, LogLinePosY: {:?}, LogLineFirstItem: {:?}, LogDepthRef: {:?}, LogDepthToExpand: {:?}, LogDepthToExpandDefault: {:?}, DebugItemPickerActive: {:?}, DebugItemPickerBreakId: {:?}, DebugMetricsConfig: {:?}, FramerateSecPerFrame: [...], FramerateSecPerFrameIdx: {:?}, FramerateSecPerFrameAccum: {:?}, WantCaptureMouseNextFrame: {:?}, WantCaptureKeyboardNextFrame: {:?}, WantTextInputNextFrame: {:?}, TempBuffer: [...] }}" , self . Initialized , self . FontAtlasOwnedByContext , self . IO , self . PlatformIO , self . Style , self . ConfigFlagsCurrFrame , self . ConfigFlagsLastFrame , self . Font , self . FontSize , self . FontBaseSize , self . DrawListSharedData , self . Time , self . FrameCount , self . FrameCountEnded , self . FrameCountPlatformEnded , self . FrameCountRendered , self . WithinFrameScope , self . WithinFrameScopeWithImplicitWindow , self . WithinEndChild , self . GcCompactAll , self . TestEngineHookItems , self . TestEngineHookIdInfo , self . TestEngine , self . Windows , self . WindowsFocusOrder , self . WindowsTempSortBuffer , self . CurrentWindowStack , self . WindowsById , self . WindowsActiveCount , self . CurrentWindow , self . HoveredWindow , self . HoveredRootWindow , self . HoveredWindowUnderMovingWindow , self . HoveredDockNode , self . MovingWindow , self . WheelingWindow , self . WheelingWindowRefMousePos , self . WheelingWindowTimer , self . HoveredId , self . HoveredIdPreviousFrame , self . HoveredIdAllowOverlap , self . HoveredIdUsingMouseWheel , self . HoveredIdPreviousFrameUsingMouseWheel , self . HoveredIdDisabled , self . HoveredIdTimer , self . HoveredIdNotActiveTimer , self . ActiveId , self . ActiveIdIsAlive , self . ActiveIdTimer , self . ActiveIdIsJustActivated , self . ActiveIdAllowOverlap , self . ActiveIdNoClearOnFocusLoss , self . ActiveIdHasBeenPressedBefore , self . ActiveIdHasBeenEditedBefore , self . ActiveIdHasBeenEditedThisFrame , self . ActiveIdUsingMouseWheel , self . ActiveIdUsingNavDirMask , self . ActiveIdUsingNavInputMask , self . ActiveIdUsingKeyInputMask , self . ActiveIdClickOffset , self . ActiveIdWindow , self . ActiveIdSource , self . ActiveIdMouseButton , self . ActiveIdPreviousFrame , self . ActiveIdPreviousFrameIsAlive , self . ActiveIdPreviousFrameHasBeenEditedBefore , self . ActiveIdPreviousFrameWindow , self . LastActiveId , self . LastActiveIdTimer , self . NextWindowData , self . NextItemData , self . ColorStack , self . StyleVarStack , self . FontStack , self . FocusScopeStack , self . ItemFlagsStack , self . GroupStack , self . OpenPopupStack , self . BeginPopupStack , self . Viewports , self . CurrentDpiScale , self . CurrentViewport , self . MouseViewport , self . MouseLastHoveredViewport , self . PlatformLastFocusedViewportId , self . ViewportFrontMostStampCount , self . NavWindow , self . NavId , self . NavFocusScopeId , self . NavActivateId , self . NavActivateDownId , self . NavActivatePressedId , self . NavInputId , self . NavJustTabbedId , self . NavJustMovedToId , self . NavJustMovedToFocusScopeId , self . NavJustMovedToKeyMods , self . NavNextActivateId , self . NavInputSource , self . NavScoringRect , self . NavScoringCount , self . NavLayer , self . NavIdTabCounter , self . NavIdIsAlive , self . NavMousePosDirty , self . NavDisableHighlight , self . NavDisableMouseHover , self . NavAnyRequest , self . NavInitRequest , self . NavInitRequestFromMove , self . NavInitResultId , self . NavInitResultRectRel , self . NavMoveRequest , self . NavMoveRequestFlags , self . NavMoveRequestForward , self . NavMoveRequestKeyMods , self . NavMoveDir , self . NavMoveDirLast , self . NavMoveClipDir , self . NavMoveResultLocal , self . NavMoveResultLocalVisibleSet , self . NavMoveResultOther , self . NavWrapRequestWindow , self . NavWrapRequestFlags , self . NavWindowingTarget , self . NavWindowingTargetAnim , self . NavWindowingListWindow , self . NavWindowingTimer , self . NavWindowingHighlightAlpha , self . NavWindowingToggleLayer , self . FocusRequestCurrWindow , self . FocusRequestNextWindow , self . FocusRequestCurrCounterRegular , self . FocusRequestCurrCounterTabStop , self . FocusRequestNextCounterRegular , self . FocusRequestNextCounterTabStop , self . FocusTabPressed , self . DimBgRatio , self . MouseCursor , self . DragDropActive , self . DragDropWithinSource , self . DragDropWithinTarget , self . DragDropSourceFlags , self . DragDropSourceFrameCount , self . DragDropMouseButton , self . DragDropPayload , self . DragDropTargetRect , self . DragDropTargetId , self . DragDropAcceptFlags , self . DragDropAcceptIdCurrRectSurface , self . DragDropAcceptIdCurr , self . DragDropAcceptIdPrev , self . DragDropAcceptFrameCount , self . DragDropHoldJustPressedId , self . DragDropPayloadBufHeap , self . DragDropPayloadBufLocal , self . CurrentTable , self . Tables , self . CurrentTableStack , self . TablesLastTimeActive , self . DrawChannelsTempMergeBuffer , self . CurrentTabBar , self . TabBars , self . CurrentTabBarStack , self . ShrinkWidthBuffer , self . LastValidMousePos , self . InputTextState , self . InputTextPasswordFont , self . TempInputId , self . ColorEditOptions , self . ColorEditLastHue , self . ColorEditLastSat , self . ColorEditLastColor , self . ColorPickerRef , self . SliderCurrentAccum , self . SliderCurrentAccumDirty , self . DragCurrentAccumDirty , self . DragCurrentAccum , self . DragSpeedDefaultRatio , self . ScrollbarClickDeltaToGrabCenter , self . TooltipOverrideCount , self . TooltipSlowDelay , self . ClipboardHandlerData , self . MenusIdSubmittedThisFrame , self . PlatformImePos , self . PlatformImeLastPos , self . PlatformImePosViewport , self . PlatformLocaleDecimalPoint , self . DockContext , self . SettingsLoaded , self . SettingsDirtyTimer , self . SettingsIniData , self . SettingsHandlers , self . SettingsWindows , self . SettingsTables , self . Hooks , self . HookIdNext , self . LogEnabled , self . LogType , self . LogFile , self . LogBuffer , self . LogNextPrefix , self . LogNextSuffix , self . LogLinePosY , self . LogLineFirstItem , self . LogDepthRef , self . LogDepthToExpand , self . LogDepthToExpandDefault , self . DebugItemPickerActive , self . DebugItemPickerBreakId , self . DebugMetricsConfig , self . FramerateSecPerFrameIdx , self . FramerateSecPerFrameAccum , self . WantCaptureMouseNextFrame , self . WantCaptureKeyboardNextFrame , self . WantTextInputNextFrame)
     }
 }
 #[repr(C)]
@@ -2830,6 +3406,12 @@ pub struct ImGuiWindow {
     pub Name: *mut cty::c_char,
     pub ID: ImGuiID,
     pub Flags: ImGuiWindowFlags,
+    pub FlagsPreviousFrame: ImGuiWindowFlags,
+    pub WindowClass: ImGuiWindowClass,
+    pub Viewport: *mut ImGuiViewportP,
+    pub ViewportId: ImGuiID,
+    pub ViewportPos: ImVec2,
+    pub ViewportAllowPlatformMonitorExtend: cty::c_int,
     pub Pos: ImVec2,
     pub Size: ImVec2,
     pub SizeFull: ImVec2,
@@ -2850,6 +3432,7 @@ pub struct ImGuiWindow {
     pub ScrollbarSizes: ImVec2,
     pub ScrollbarX: bool,
     pub ScrollbarY: bool,
+    pub ViewportOwned: bool,
     pub Active: bool,
     pub WasActive: bool,
     pub WriteAccessed: bool,
@@ -2873,7 +3456,7 @@ pub struct ImGuiWindow {
     pub HiddenFramesCanSkipItems: ImS8,
     pub HiddenFramesCannotSkipItems: ImS8,
     pub HiddenFramesForRenderOnly: ImS8,
-    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 3usize], u8>,
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 4usize], u8>,
     pub SetWindowPosVal: ImVec2,
     pub SetWindowPosPivot: ImVec2,
     pub IDStack: ImVector_ImGuiID,
@@ -2888,16 +3471,19 @@ pub struct ImGuiWindow {
     pub HitTestHoleSize: ImVec2ih,
     pub HitTestHoleOffset: ImVec2ih,
     pub LastFrameActive: cty::c_int,
+    pub LastFrameJustFocused: cty::c_int,
     pub LastTimeActive: f32,
     pub ItemWidthDefault: f32,
     pub StateStorage: ImGuiStorage,
     pub ColumnsStorage: ImVector_ImGuiOldColumns,
     pub FontWindowScale: f32,
+    pub FontDpiScale: f32,
     pub SettingsOffset: cty::c_int,
     pub DrawList: *mut ImDrawList,
     pub DrawListInst: ImDrawList,
     pub ParentWindow: *mut ImGuiWindow,
     pub RootWindow: *mut ImGuiWindow,
+    pub RootWindowDockStop: *mut ImGuiWindow,
     pub RootWindowForTitleBarHighlight: *mut ImGuiWindow,
     pub RootWindowForNav: *mut ImGuiWindow,
     pub NavLastChildNavWindow: *mut ImGuiWindow,
@@ -2906,6 +3492,14 @@ pub struct ImGuiWindow {
     pub MemoryDrawListIdxCapacity: cty::c_int,
     pub MemoryDrawListVtxCapacity: cty::c_int,
     pub MemoryCompacted: bool,
+    pub _bitfield_2: __BindgenBitfieldUnit<[u8; 1usize], u8>,
+    pub DockOrder: cty::c_short,
+    pub DockStyle: ImGuiWindowDockStyle,
+    pub DockNode: *mut ImGuiDockNode,
+    pub DockNodeAsHost: *mut ImGuiDockNode,
+    pub DockId: ImGuiID,
+    pub DockTabItemStatusFlags: ImGuiItemStatusFlags,
+    pub DockTabItemRect: ImRect,
 }
 impl Default for ImGuiWindow {
     fn default() -> Self {
@@ -2947,12 +3541,24 @@ impl ImGuiWindow {
         }
     }
     #[inline]
+    pub fn SetWindowDockAllowFlags(&self) -> ImGuiCond {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(24usize, 8u8) as u32) }
+    }
+    #[inline]
+    pub fn set_SetWindowDockAllowFlags(&mut self, val: ImGuiCond) {
+        unsafe {
+            let val: u32 = ::core::mem::transmute(val);
+            self._bitfield_1.set(24usize, 8u8, val as u64)
+        }
+    }
+    #[inline]
     pub fn new_bitfield_1(
         SetWindowPosAllowFlags: ImGuiCond,
         SetWindowSizeAllowFlags: ImGuiCond,
         SetWindowCollapsedAllowFlags: ImGuiCond,
-    ) -> __BindgenBitfieldUnit<[u8; 3usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 3usize], u8> =
+        SetWindowDockAllowFlags: ImGuiCond,
+    ) -> __BindgenBitfieldUnit<[u8; 4usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u8> =
             Default::default();
         __bindgen_bitfield_unit.set(0usize, 8u8, {
             let SetWindowPosAllowFlags: u32 =
@@ -2968,6 +3574,66 @@ impl ImGuiWindow {
             let SetWindowCollapsedAllowFlags: u32 =
                 unsafe { ::core::mem::transmute(SetWindowCollapsedAllowFlags) };
             SetWindowCollapsedAllowFlags as u64
+        });
+        __bindgen_bitfield_unit.set(24usize, 8u8, {
+            let SetWindowDockAllowFlags: u32 =
+                unsafe { ::core::mem::transmute(SetWindowDockAllowFlags) };
+            SetWindowDockAllowFlags as u64
+        });
+        __bindgen_bitfield_unit
+    }
+    #[inline]
+    pub fn DockIsActive(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_2.get(0usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_DockIsActive(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_2.set(0usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn DockTabIsVisible(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_2.get(1usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_DockTabIsVisible(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_2.set(1usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn DockTabWantClose(&self) -> bool {
+        unsafe { ::core::mem::transmute(self._bitfield_2.get(2usize, 1u8) as u8) }
+    }
+    #[inline]
+    pub fn set_DockTabWantClose(&mut self, val: bool) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_2.set(2usize, 1u8, val as u64)
+        }
+    }
+    #[inline]
+    pub fn new_bitfield_2(
+        DockIsActive: bool,
+        DockTabIsVisible: bool,
+        DockTabWantClose: bool,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
+        __bindgen_bitfield_unit.set(0usize, 1u8, {
+            let DockIsActive: u8 = unsafe { ::core::mem::transmute(DockIsActive) };
+            DockIsActive as u64
+        });
+        __bindgen_bitfield_unit.set(1usize, 1u8, {
+            let DockTabIsVisible: u8 = unsafe { ::core::mem::transmute(DockTabIsVisible) };
+            DockTabIsVisible as u64
+        });
+        __bindgen_bitfield_unit.set(2usize, 1u8, {
+            let DockTabWantClose: u8 = unsafe { ::core::mem::transmute(DockTabWantClose) };
+            DockTabWantClose as u64
         });
         __bindgen_bitfield_unit
     }
@@ -2986,12 +3652,15 @@ pub const ImGuiTabBarFlags_SaveSettings: ImGuiTabBarFlagsPrivate_ = 4194304;
 pub type ImGuiTabBarFlagsPrivate_ = cty::c_uint;
 pub const ImGuiTabItemFlags_NoCloseButton: ImGuiTabItemFlagsPrivate_ = 1048576;
 pub const ImGuiTabItemFlags_Button: ImGuiTabItemFlagsPrivate_ = 2097152;
+pub const ImGuiTabItemFlags_Unsorted: ImGuiTabItemFlagsPrivate_ = 4194304;
+pub const ImGuiTabItemFlags_Preview: ImGuiTabItemFlagsPrivate_ = 8388608;
 pub type ImGuiTabItemFlagsPrivate_ = cty::c_uint;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct ImGuiTabItem {
     pub ID: ImGuiID,
     pub Flags: ImGuiTabItemFlags,
+    pub Window: *mut ImGuiWindow,
     pub LastFrameVisible: cty::c_int,
     pub LastFrameSelected: cty::c_int,
     pub Offset: f32,
@@ -3001,6 +3670,11 @@ pub struct ImGuiTabItem {
     pub BeginOrder: ImS16,
     pub IndexDuringLayout: ImS16,
     pub WantClose: bool,
+}
+impl Default for ImGuiTabItem {
+    fn default() -> Self {
+        unsafe { ::core::mem::zeroed() }
+    }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -3509,6 +4183,9 @@ extern "C" {
     pub fn igGetWindowDrawList() -> *mut ImDrawList;
 }
 extern "C" {
+    pub fn igGetWindowDpiScale() -> f32;
+}
+extern "C" {
     pub fn igGetWindowPos(pOut: *mut ImVec2);
 }
 extern "C" {
@@ -3519,6 +4196,9 @@ extern "C" {
 }
 extern "C" {
     pub fn igGetWindowHeight() -> f32;
+}
+extern "C" {
+    pub fn igGetWindowViewport() -> *mut ImGuiViewport;
 }
 extern "C" {
     pub fn igSetNextWindowPos(pos: ImVec2, cond: ImGuiCond, pivot: ImVec2);
@@ -3545,6 +4225,9 @@ extern "C" {
 }
 extern "C" {
     pub fn igSetNextWindowBgAlpha(alpha: f32);
+}
+extern "C" {
+    pub fn igSetNextWindowViewport(viewport_id: ImGuiID);
 }
 extern "C" {
     pub fn igSetWindowPosVec2(pos: ImVec2, cond: ImGuiCond);
@@ -4741,6 +5424,33 @@ extern "C" {
     pub fn igSetTabItemClosed(tab_or_docked_window_label: *const cty::c_char);
 }
 extern "C" {
+    pub fn igDockSpace(
+        id: ImGuiID,
+        size: ImVec2,
+        flags: ImGuiDockNodeFlags,
+        window_class: *const ImGuiWindowClass,
+    );
+}
+extern "C" {
+    pub fn igDockSpaceOverViewport(
+        viewport: *const ImGuiViewport,
+        flags: ImGuiDockNodeFlags,
+        window_class: *const ImGuiWindowClass,
+    ) -> ImGuiID;
+}
+extern "C" {
+    pub fn igSetNextWindowDockID(dock_id: ImGuiID, cond: ImGuiCond);
+}
+extern "C" {
+    pub fn igSetNextWindowClass(window_class: *const ImGuiWindowClass);
+}
+extern "C" {
+    pub fn igGetWindowDockID() -> ImGuiID;
+}
+extern "C" {
+    pub fn igIsWindowDocked() -> bool;
+}
+extern "C" {
     pub fn igLogToTTY(auto_open_depth: cty::c_int);
 }
 extern "C" {
@@ -4871,6 +5581,12 @@ extern "C" {
 }
 extern "C" {
     pub fn igGetForegroundDrawListNil() -> *mut ImDrawList;
+}
+extern "C" {
+    pub fn igGetBackgroundDrawListViewportPtr(viewport: *mut ImGuiViewport) -> *mut ImDrawList;
+}
+extern "C" {
+    pub fn igGetForegroundDrawListViewportPtr(viewport: *mut ImGuiViewport) -> *mut ImDrawList;
 }
 extern "C" {
     pub fn igGetDrawListSharedData() -> *mut ImDrawListSharedData;
@@ -5044,6 +5760,27 @@ extern "C" {
     pub fn igMemFree(ptr: *mut cty::c_void);
 }
 extern "C" {
+    pub fn igGetPlatformIO() -> *mut ImGuiPlatformIO;
+}
+extern "C" {
+    pub fn igUpdatePlatformWindows();
+}
+extern "C" {
+    pub fn igRenderPlatformWindowsDefault(
+        platform_render_arg: *mut cty::c_void,
+        renderer_render_arg: *mut cty::c_void,
+    );
+}
+extern "C" {
+    pub fn igDestroyPlatformWindows();
+}
+extern "C" {
+    pub fn igFindViewportByID(id: ImGuiID) -> *mut ImGuiViewport;
+}
+extern "C" {
+    pub fn igFindViewportByPlatformHandle(platform_handle: *mut cty::c_void) -> *mut ImGuiViewport;
+}
+extern "C" {
     pub fn ImGuiStyle_ImGuiStyle() -> *mut ImGuiStyle;
 }
 extern "C" {
@@ -5099,6 +5836,12 @@ extern "C" {
 }
 extern "C" {
     pub fn ImGuiInputTextCallbackData_HasSelection(self_: *mut ImGuiInputTextCallbackData) -> bool;
+}
+extern "C" {
+    pub fn ImGuiWindowClass_ImGuiWindowClass() -> *mut ImGuiWindowClass;
+}
+extern "C" {
+    pub fn ImGuiWindowClass_destroy(self_: *mut ImGuiWindowClass);
 }
 extern "C" {
     pub fn ImGuiPayload_ImGuiPayload() -> *mut ImGuiPayload;
@@ -6145,6 +6888,18 @@ extern "C" {
     pub fn ImGuiViewport_GetWorkCenter(pOut: *mut ImVec2, self_: *mut ImGuiViewport);
 }
 extern "C" {
+    pub fn ImGuiPlatformIO_ImGuiPlatformIO() -> *mut ImGuiPlatformIO;
+}
+extern "C" {
+    pub fn ImGuiPlatformIO_destroy(self_: *mut ImGuiPlatformIO);
+}
+extern "C" {
+    pub fn ImGuiPlatformMonitor_ImGuiPlatformMonitor() -> *mut ImGuiPlatformMonitor;
+}
+extern "C" {
+    pub fn ImGuiPlatformMonitor_destroy(self_: *mut ImGuiPlatformMonitor);
+}
+extern "C" {
     pub fn igImHashData(data: *const cty::c_void, data_size: usize, seed: ImU32) -> ImGuiID;
 }
 extern "C" {
@@ -6746,6 +7501,51 @@ extern "C" {
     pub fn ImGuiOldColumns_destroy(self_: *mut ImGuiOldColumns);
 }
 extern "C" {
+    pub fn ImGuiDockNode_ImGuiDockNode(id: ImGuiID) -> *mut ImGuiDockNode;
+}
+extern "C" {
+    pub fn ImGuiDockNode_destroy(self_: *mut ImGuiDockNode);
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsRootNode(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsDockSpace(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsFloatingNode(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsCentralNode(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsHiddenTabBar(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsNoTabBar(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsSplitNode(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsLeafNode(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_IsEmpty(self_: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn ImGuiDockNode_GetMergedFlags(self_: *mut ImGuiDockNode) -> ImGuiDockNodeFlags;
+}
+extern "C" {
+    pub fn ImGuiDockNode_Rect(pOut: *mut ImRect, self_: *mut ImGuiDockNode);
+}
+extern "C" {
+    pub fn ImGuiDockContext_ImGuiDockContext() -> *mut ImGuiDockContext;
+}
+extern "C" {
+    pub fn ImGuiDockContext_destroy(self_: *mut ImGuiDockContext);
+}
+extern "C" {
     pub fn ImGuiViewportP_ImGuiViewportP() -> *mut ImGuiViewportP;
 }
 extern "C" {
@@ -6759,6 +7559,9 @@ extern "C" {
 }
 extern "C" {
     pub fn ImGuiViewportP_UpdateWorkRect(self_: *mut ImGuiViewportP);
+}
+extern "C" {
+    pub fn ImGuiViewportP_ClearRequestFlags(self_: *mut ImGuiViewportP);
 }
 extern "C" {
     pub fn ImGuiWindowSettings_ImGuiWindowSettings() -> *mut ImGuiWindowSettings;
@@ -7008,12 +7811,6 @@ extern "C" {
     pub fn igGetForegroundDrawListWindowPtr(window: *mut ImGuiWindow) -> *mut ImDrawList;
 }
 extern "C" {
-    pub fn igGetBackgroundDrawListViewportPtr(viewport: *mut ImGuiViewport) -> *mut ImDrawList;
-}
-extern "C" {
-    pub fn igGetForegroundDrawListViewportPtr(viewport: *mut ImGuiViewport) -> *mut ImDrawList;
-}
-extern "C" {
     pub fn igInitialize(context: *mut ImGuiContext);
 }
 extern "C" {
@@ -7024,6 +7821,13 @@ extern "C" {
 }
 extern "C" {
     pub fn igStartMouseMovingWindow(window: *mut ImGuiWindow);
+}
+extern "C" {
+    pub fn igStartMouseMovingWindowOrNode(
+        window: *mut ImGuiWindow,
+        node: *mut ImGuiDockNode,
+        undock_floating_node: bool,
+    );
 }
 extern "C" {
     pub fn igUpdateMouseMovingWindowNewFrame();
@@ -7039,6 +7843,19 @@ extern "C" {
 }
 extern "C" {
     pub fn igCallContextHooks(context: *mut ImGuiContext, type_: ImGuiContextHookType);
+}
+extern "C" {
+    pub fn igTranslateWindowsInViewport(
+        viewport: *mut ImGuiViewportP,
+        old_pos: ImVec2,
+        new_pos: ImVec2,
+    );
+}
+extern "C" {
+    pub fn igScaleWindowsInViewport(viewport: *mut ImGuiViewportP, scale: f32);
+}
+extern "C" {
+    pub fn igDestroyPlatformWindow(viewport: *mut ImGuiViewportP);
 }
 extern "C" {
     pub fn igMarkIniSettingsDirtyNil();
@@ -7347,6 +8164,147 @@ extern "C" {
     pub fn igGetMergedKeyModFlags() -> ImGuiKeyModFlags;
 }
 extern "C" {
+    pub fn igDockContextInitialize(ctx: *mut ImGuiContext);
+}
+extern "C" {
+    pub fn igDockContextShutdown(ctx: *mut ImGuiContext);
+}
+extern "C" {
+    pub fn igDockContextClearNodes(
+        ctx: *mut ImGuiContext,
+        root_id: ImGuiID,
+        clear_settings_refs: bool,
+    );
+}
+extern "C" {
+    pub fn igDockContextRebuildNodes(ctx: *mut ImGuiContext);
+}
+extern "C" {
+    pub fn igDockContextNewFrameUpdateUndocking(ctx: *mut ImGuiContext);
+}
+extern "C" {
+    pub fn igDockContextNewFrameUpdateDocking(ctx: *mut ImGuiContext);
+}
+extern "C" {
+    pub fn igDockContextGenNodeID(ctx: *mut ImGuiContext) -> ImGuiID;
+}
+extern "C" {
+    pub fn igDockContextQueueDock(
+        ctx: *mut ImGuiContext,
+        target: *mut ImGuiWindow,
+        target_node: *mut ImGuiDockNode,
+        payload: *mut ImGuiWindow,
+        split_dir: ImGuiDir,
+        split_ratio: f32,
+        split_outer: bool,
+    );
+}
+extern "C" {
+    pub fn igDockContextQueueUndockWindow(ctx: *mut ImGuiContext, window: *mut ImGuiWindow);
+}
+extern "C" {
+    pub fn igDockContextQueueUndockNode(ctx: *mut ImGuiContext, node: *mut ImGuiDockNode);
+}
+extern "C" {
+    pub fn igDockContextCalcDropPosForDocking(
+        target: *mut ImGuiWindow,
+        target_node: *mut ImGuiDockNode,
+        payload: *mut ImGuiWindow,
+        split_dir: ImGuiDir,
+        split_outer: bool,
+        out_pos: *mut ImVec2,
+    ) -> bool;
+}
+extern "C" {
+    pub fn igDockNodeBeginAmendTabBar(node: *mut ImGuiDockNode) -> bool;
+}
+extern "C" {
+    pub fn igDockNodeEndAmendTabBar();
+}
+extern "C" {
+    pub fn igDockNodeGetRootNode(node: *mut ImGuiDockNode) -> *mut ImGuiDockNode;
+}
+extern "C" {
+    pub fn igDockNodeGetDepth(node: *const ImGuiDockNode) -> cty::c_int;
+}
+extern "C" {
+    pub fn igGetWindowDockNode() -> *mut ImGuiDockNode;
+}
+extern "C" {
+    pub fn igGetWindowAlwaysWantOwnTabBar(window: *mut ImGuiWindow) -> bool;
+}
+extern "C" {
+    pub fn igBeginDocked(window: *mut ImGuiWindow, p_open: *mut bool);
+}
+extern "C" {
+    pub fn igBeginDockableDragDropSource(window: *mut ImGuiWindow);
+}
+extern "C" {
+    pub fn igBeginDockableDragDropTarget(window: *mut ImGuiWindow);
+}
+extern "C" {
+    pub fn igSetWindowDock(window: *mut ImGuiWindow, dock_id: ImGuiID, cond: ImGuiCond);
+}
+extern "C" {
+    pub fn igDockBuilderDockWindow(window_name: *const cty::c_char, node_id: ImGuiID);
+}
+extern "C" {
+    pub fn igDockBuilderGetNode(node_id: ImGuiID) -> *mut ImGuiDockNode;
+}
+extern "C" {
+    pub fn igDockBuilderGetCentralNode(node_id: ImGuiID) -> *mut ImGuiDockNode;
+}
+extern "C" {
+    pub fn igDockBuilderAddNode(node_id: ImGuiID, flags: ImGuiDockNodeFlags) -> ImGuiID;
+}
+extern "C" {
+    pub fn igDockBuilderRemoveNode(node_id: ImGuiID);
+}
+extern "C" {
+    pub fn igDockBuilderRemoveNodeDockedWindows(node_id: ImGuiID, clear_settings_refs: bool);
+}
+extern "C" {
+    pub fn igDockBuilderRemoveNodeChildNodes(node_id: ImGuiID);
+}
+extern "C" {
+    pub fn igDockBuilderSetNodePos(node_id: ImGuiID, pos: ImVec2);
+}
+extern "C" {
+    pub fn igDockBuilderSetNodeSize(node_id: ImGuiID, size: ImVec2);
+}
+extern "C" {
+    pub fn igDockBuilderSplitNode(
+        node_id: ImGuiID,
+        split_dir: ImGuiDir,
+        size_ratio_for_node_at_dir: f32,
+        out_id_at_dir: *mut ImGuiID,
+        out_id_at_opposite_dir: *mut ImGuiID,
+    ) -> ImGuiID;
+}
+extern "C" {
+    pub fn igDockBuilderCopyDockSpace(
+        src_dockspace_id: ImGuiID,
+        dst_dockspace_id: ImGuiID,
+        in_window_remap_pairs: *mut ImVector_const_charPtr,
+    );
+}
+extern "C" {
+    pub fn igDockBuilderCopyNode(
+        src_node_id: ImGuiID,
+        dst_node_id: ImGuiID,
+        out_node_remap_pairs: *mut ImVector_ImGuiID,
+    );
+}
+extern "C" {
+    pub fn igDockBuilderCopyWindowSettings(
+        src_name: *const cty::c_char,
+        dst_name: *const cty::c_char,
+    );
+}
+extern "C" {
+    pub fn igDockBuilderFinish(node_id: ImGuiID);
+}
+extern "C" {
     pub fn igBeginDragDropTargetCustom(bb: ImRect, id: ImGuiID) -> bool;
 }
 extern "C" {
@@ -7541,10 +8499,27 @@ extern "C" {
     pub fn igTableSettingsFindByID(id: ImGuiID) -> *mut ImGuiTableSettings;
 }
 extern "C" {
-    pub fn igBeginTabBarEx(tab_bar: *mut ImGuiTabBar, bb: ImRect, flags: ImGuiTabBarFlags) -> bool;
+    pub fn igBeginTabBarEx(
+        tab_bar: *mut ImGuiTabBar,
+        bb: ImRect,
+        flags: ImGuiTabBarFlags,
+        dock_node: *mut ImGuiDockNode,
+    ) -> bool;
 }
 extern "C" {
     pub fn igTabBarFindTabByID(tab_bar: *mut ImGuiTabBar, tab_id: ImGuiID) -> *mut ImGuiTabItem;
+}
+extern "C" {
+    pub fn igTabBarFindMostRecentlySelectedTabForActiveWindow(
+        tab_bar: *mut ImGuiTabBar,
+    ) -> *mut ImGuiTabItem;
+}
+extern "C" {
+    pub fn igTabBarAddTab(
+        tab_bar: *mut ImGuiTabBar,
+        tab_flags: ImGuiTabItemFlags,
+        window: *mut ImGuiWindow,
+    );
 }
 extern "C" {
     pub fn igTabBarRemoveTab(tab_bar: *mut ImGuiTabBar, tab_id: ImGuiID);
@@ -7568,6 +8543,7 @@ extern "C" {
         label: *const cty::c_char,
         p_open: *mut bool,
         flags: ImGuiTabItemFlags,
+        docked_window: *mut ImGuiWindow,
     ) -> bool;
 }
 extern "C" {
@@ -7715,6 +8691,9 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn igRenderArrowDockMenu(draw_list: *mut ImDrawList, p_min: ImVec2, sz: f32, col: ImU32);
+}
+extern "C" {
     pub fn igRenderRectFilledRangeH(
         draw_list: *mut ImDrawList,
         rect: ImRect,
@@ -7744,7 +8723,7 @@ extern "C" {
     pub fn igCloseButton(id: ImGuiID, pos: ImVec2) -> bool;
 }
 extern "C" {
-    pub fn igCollapseButton(id: ImGuiID, pos: ImVec2) -> bool;
+    pub fn igCollapseButton(id: ImGuiID, pos: ImVec2, dock_node: *mut ImGuiDockNode) -> bool;
 }
 extern "C" {
     pub fn igArrowButtonEx(
@@ -8025,8 +9004,12 @@ extern "C" {
     pub fn igDebugNodeColumns(columns: *mut ImGuiOldColumns);
 }
 extern "C" {
+    pub fn igDebugNodeDockNode(node: *mut ImGuiDockNode, label: *const cty::c_char);
+}
+extern "C" {
     pub fn igDebugNodeDrawList(
         window: *mut ImGuiWindow,
+        viewport: *mut ImGuiViewportP,
         draw_list: *const ImDrawList,
         label: *const cty::c_char,
     );
